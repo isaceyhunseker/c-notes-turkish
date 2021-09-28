@@ -29,11 +29,9 @@
 - Embedded systemde macrolar adresleri tutmak icin de kullanir.
 - Fonksiyonel makroda makro isminden sonra  hemen parantez tokeninin gelmesi gerekiyor.
 - Islem onceligi durumundan kacmak icin fonksiyon makrolarinda degiskeni () icinde yazmaktayiz
-
     ```
     #define ISLEAP(x)  ((y) % 4 == 0 && ((y) % 100 || (y) % 400 == 0)) 
     ```
-
 - Kodu kucuk ve sik cagirilan fonksiyonlar cagirildiginda fonksiyon yazmak maliyeti daha fazladir. Bu durumda makrolar daha anlamlidir(fonksiyonel makrolar)
 - Fonksiyonel makronun icine baska bir makro yazilabilir.
 
