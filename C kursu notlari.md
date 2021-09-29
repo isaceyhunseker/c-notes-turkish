@@ -128,3 +128,49 @@
         return sum;
     }
     ```
+    
+## 21 goto - Type Conversions(Tur Donusumleri)
+
+- goto statement, iki farkli sekilde yapilabilir: long jump ve local jump(near jump)
+- long jump baska bir fonksiyondaki frame stackine giden goto statementtir.
+- local jump ayni fonksiyon icerisindeki bir frame stackine gidilmesidir.
+- C'de sadece local jump mumkundur. Sadece fonksiyon icerisinde kullaniliyor.
+- Programin akisini gotolar ile yapmak programin test edilmesini zorlastiriyor, bu yuzden insanlar kullanmamaya yatkin. Ancak bazen tek cozum o oluyor.
+- goto bir labeldir(etiket). Labellar `labelname:` seklinde tanimlanir. Ve her label muhakkak bir statement icermelidir.
+- goto labellari function scope denen ozel bir tanim araligina sahiptir. Fonksiyon icindeki her alanda kullanilabilir.
+- goto syntaxi:
+  ```
+  goto label;
+
+  label:
+    //statement;  
+  ```
+- goto kontrol deyimi ile fonksiyonda daha yukaridaki bir deyime programin akisi yonlendirilmemelidir.
+- cok ic ice tasarlanan dongulerde butun donguden cikmak icin goto kullanilabilir. goto kullanilmaz ise flag set edilip bu flagin degerine gore breakler calistirilir, bu durum goto kullanmaktan cok daha komplikedir.
+```
+for ...{
+    //statement
+    while...{
+        //statement
+        for ...{
+            //statement
+            if ...{
+                //statement
+                goto out;
+                  }
+               }
+            }
+        }
+out:
+    //statement       
+```
+- Type Conversion bir ifadenin dogrudan degil farkli bir turde ifade edilerek o turde kullanilmasina verilen addir.
+- implicit type conversion: implicit ortulu demek ustu kapali bir sekilde tur donusumu yapilmasidir. Implicit donusum icin bir talimat verilmiyor, derleyici dilin kurallari geregi tur donusumunu otomati yapiyor.Mesela bir int val ile double val ile toplama islemi yaparsak int val bu toplama islemnine double value olarak girer. Bunu derleyici otomatik olarak yapar.
+- explicit type conversion: burada acikca derleyiciye bir operator tarafindan turu donusturmesi gerektigi soyleniyor, bu operatorun adi **type-cast** operatorudur.
+- implicit type conversion, usual arithmetic conversion'da operatorlerin kullanilmasi sonucu otomatik olarak yapilan ortulu donusumlerdir. Operatorler = +->< vs
+- bir diger implicit type conversion, atama esnasinda yapilan donusumlerdir. Atama veya kopyalama yapilirken tur otomatik olarak degistirilir. 
+    - `int ival = 3.4` degerinin 3 olarak alinmasi gibi.
+    - Fonksiyon cagrisindaki parametre gonderilen parametreden farkliysa yine otomatik olarak degistirilmesi gibi.
+    - `return ival;` statementinda da otomatik olarak degistirilir.
+
+1. saatte kaldim. 
