@@ -172,5 +172,54 @@ out:
     - `int ival = 3.4` degerinin 3 olarak alinmasi gibi.
     - Fonksiyon cagrisindaki parametre gonderilen parametreden farkliysa yine otomatik olarak degistirilmesi gibi.
     - `return ival;` statementinda da otomatik olarak degistirilir.
+- Genel olarak yaklasim veri kaybinin engellemeye yoneliktir.
+- Degiskenlerin rank siralamasi asagida verilmistir:
+    ```
+    1. Grup:
+    long double 
+    double 
+    float
+ 
+    2. Grup:
+    long long / unsigned long long 
+    long / unsigned long
+    int /unsigned int
 
-1. saatte kaldim. 
+    ----integral promotion bound----
+    3. Grup:
+    short 
+    char/signed char/ unsigned char 
+    _Bool 
+    ```
+- **1. Grup:** Bu uc operanddan birinin oldugu bir islemde diger operandin rank'i bu operanda donusturulur ve islem bu turde yapilir.
+- **2. Grup:** Bu uclude:
+  - Rankler ayni ve signedness farkli ise isaretsiz olan ture donusulerek islem yapilir.
+  - Rank farkli yuksek olan rank isaretsiz dusuk olan isaretli ise islem isaretsiz yuksek rank'te yapilir.
+  - Rankler ve isaretler farkli ve buyuk olan rank isaretli kucuk rank isaretsiz ise, isaretsiz kucuk rank buyuk ranke sigiyorsa buyuk rankteki turde yapilir, eger tutamiyorsa isaretsiz olanin bir buyuk rankinde yapilir.
+- **3. Grup:** integral promotion, islemdeki bir ya da iki  degiskenin int alti olmasi durumunda(integral promotion bound) bu degisklerin int'e donusturulup islemin burada yapilmasidir.
+- Int to double implicit type-cast ornegi asagida verilmistir:(Usual Aritmetic Conversion)
+    ```
+    int x = 12
+    int y =5
+
+    double dval = 1. * x / y 
+
+    /*
+    1. ile carpilmasi x'i double yapti x ile carpilmasi y'yi de double yapti. 
+
+    1. ile carpilmadan double turune esitlenseydi sonuc 2.0000 olacakti.
+    ```
+- `int x = -1;` ve `unsigned int y = 1` icin `x>y` yazar isek x implicit typecast ile 4294967296 degerine donusur.
+- Toplama Carpma gibi islemlerde:
+  - isaretli turlerde tasma tanimsiz davranis.
+  - isaretli turlerde tasma olmaz - moduler aritmetik devreye girer.
+- **Truncation**, buyuk bir rankteki degerin kucuk bir ture donusturulurken buyuk bitlerinin kaybedilmesi olayidir.
+- Gercek bir sayidan tamsayiya donusum yapildiginda onlalikli kisim gider, geri kalan kisim tamsayiya sigarsa sorun yoktur, sigmaz ise tanimsiz davranis olur.
+- Buyuk turden kucuk ture atama yapilmamalidir, yapilir ise de tur donusturme operatoru ile yapilmasi gerekir.
+- Explicit expression = (target type)expr;
+    ```
+    int x = 10;
+    int y = 3;
+
+    double dval = (double)x / y;
+    ```
