@@ -129,7 +129,7 @@
     }
     ```
     
-## 21 goto - Type Conversions(Tur Donusumleri)
+## 21 goto - Implicit Type Conversions(Tur Donusumleri)
 
 - goto statement, iki farkli sekilde yapilabilir: long jump ve local jump(near jump)
 - long jump baska bir fonksiyondaki frame stackine giden goto statementtir.
