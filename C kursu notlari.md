@@ -1,5 +1,37 @@
 # C Kursu Notlari
 
+## 1 Programlamaya Giris - C Dilinin Diger Diller ile Karsilastirilmasi
+
+## 2 C Standartlari - Derleme Surecleri - Diagnostic Mesajlari
+
+## 3 Derleyici Optimizasyonu - Sayi Sistemleri - Kod Layout - Genel Terminoloji
+
+## 4 Genel Terminoloji - Expression Tipleri - Degisken Turleri
+
+## 5 Degisken Tanimlama, Atama Metodlari ve Skoplari - Sentaks Kurallari
+
+## 6 Fonksiyonlara Giris
+
+## 7 Fonksiyonlar - Standart Kutuphanelere Giris
+
+## 8 Standart Kutuphane Fonksiyonlari - Sabit Sayi Gosterimleri (u-l-e) - ASCII Tablosu
+
+## 9 Standart Kutuphane Fonksiyonlari (printf - scanf - getchar)
+
+## 10 putchar - undefined, unspecified, implementation-defined behavior - Operatorler Giris
+
+## 11 Operatorler (Relational - Logical - Bitwise - Assignment - Conditional - Special)
+
+## 12 Operatorler - Operatorlerin Kullanim Teknikleri ve Hataları
+
+## 13 Kontrol Deyimleri(if-for) - Bos Deyimler(Null Statement)
+
+## 14 int turu kullanimlari - return - Dongu Deyimleri(while)
+
+## 15 While - For Giris
+
+## 16 For Dongusu - Genel Dongu Uygulamalari - Yorum Satirlari ve Kod Aciklama Yaklasimlari Giris
+
 ## 17 Yorum Satiri - Fonksiyon Definition, Declaration - Makrolara Giris
 
 - Nested Looplarda loopun kapali parantezinin sonuna yorum olarak hangi loopa ait oldugu yazilabilir.
