@@ -61,11 +61,9 @@
 - Embedded systemde macrolar adresleri tutmak icin de kullanir.
 - Fonksiyonel makroda makro isminden sonra  hemen parantez tokeninin gelmesi gerekiyor.
 - Islem onceligi durumundan kacmak icin fonksiyon makrolarinda degiskeni () icinde yazmaktayiz
-
     ```
     #define ISLEAP(x)  ((y) % 4 == 0 && ((y) % 100 || (y) % 400 == 0)) 
-    ```
-
+   ```
 - Kodu kucuk ve sik cagirilan fonksiyonlar cagirildiginda fonksiyon yazmak maliyeti daha fazladir. Bu durumda makrolar daha anlamlidir(fonksiyonel makrolar)
 - Fonksiyonel makronun icine baska bir makro yazilabilir.
 
@@ -264,7 +262,6 @@
 - Pointer'lar ikiye ayrilir, Object Pointers ve Function Pointers.
 - Nesnenin bellekte nerede oldugu bilgisi, nesnenin adresidir.
 - Degiskenin turu ne ise adresi de * tur seklinde gosteriliyor. Haliyle nesne turu kadar adres turu vardir.
-
     ```
     int *int
     double *double
@@ -329,7 +326,6 @@
 - Dizilerin dogrudan call by value olarak fonksiyona gonderilmeleri mumkun degildir. Donus degeri de dizi olamaz. C dilinde Bir fonksiyonun
     - Parametresi dizi olamaz
     - Geri donus degeri bir dizi olamaz.
-    
 - **Pointer Aritmetigi:** C'de bir adres ile bir tamsayi toplanabilir adresten tamsayi cikartilabilir. Tamsayidan adres cikartilasi syntax hatasidir.
 - Bu islemlerin sonucu adrestir, adres ile tamsayi isleme girdiginde cevap adrestir.
 - Dizinin bir elemaninin adresini 1 ile toplarsak bir sonraki elemanin adresini elde ederiz. Bu pointer aritmetigi sayesinde ptr'nin 1 artamasi icin sizeof(int) ile toplamak yerine 1 ile toplayabiliyoruz.
@@ -352,5 +348,146 @@
 - Bir nesnenin adresi olmayan bir pointer'da gecersiz pointerdir. 5 elemanli bir dizinin son elemani `a[4]` iken, `a[5]` gecerlidir ancak kullanmak istersek derefence edersek tanimsizdir.
 - Bir adres hayati devam eden bir nesnenin adresi ise gecerlidir, ayrica dizinin bittigi yerden sonraki adres gecerlidir ancak icerik operatorunun operandi olarak kullanildiginda tanimsizdir *bu durum daha detayli incelenecektir.*
 
-## 29 
+## 29 Pointer - Const - Diziler Ustunde Islem Yapan Fonksiyonlar
 
+- Bir pointerin tuttugu nesnenin hayati bittiginde o pointerin da gecerliligi ortadan kalkar.
+- C'de diziler buyuyen varliklar degildir kac elemani varsa o kadar kalacaktir, haliyle diziyi tasan pointer bu anlamda kullanilamaz.
+- Dizinin buyuklugunu tutmak icin belki kullanilabilir, ancak derefence edilemez.
+- `int* p = NULL` p gecerli ancak hicbir nesneyi gostermiyor, Null pointer.
+- Const anahtar sozcugu bir degiskenin taniminda kullanildiginda o degiskenin degerinin degismeyecegini adeta bir sabit gibi kullanilacagini gosteriyor. Degistirilmeye calisirsa syntax hatasi olur.
+- `const variable` bir oksimorondur. Degismeyecek olan degisken demektir. Okuma amacli kullanilacak olan degiskenler ve diziler icin kullanilir.
+- `int const` ile `const int` ayni anlama gelmektedir.
+- Degeri degismeyecek degiskenleri `const` ile tanimlayinca hem okunabilirlik artiyor hem de derleyici tarafinda optimizasyon saglaniyor.
+- Sembolik sabit makrolari,`define` ile `const` arasinda farklar vardir:
+  - const degiskenleri scopu vardir.
+  - nesne olduklari icin adresleri pointer degiskenlerde tutulabilir.
+  - Omur kategorisi degisebilir. Sembolik sabit sadece bir sabit degeridir.
+  - Case dizi indisi gibi yerlerde ancak makro sabitler kullanilabilir.
+- Dizinin sadece 5 indisli elemanina deger verip digerlerini sifir ondegeri ile tanimlamak: `int a[100] = {[5] = 459}`
+- const nesnelerin ilk degeri sabit olmak zorunda degildir runtime'da belirlenir `const int y = func();`
+- static omurlu degiskenlere ilk deger veren ifadenin sabit bir ifade olmasi gerekir.
+- const bir degiskeni bir sekilde degistirsek dahi bu tanimsiz bir davranis olur.
+- `int * const ptr = &x` demek: ptr'nin degerinin hic degismeyecegini ve hep x'i gosterecegi anlamina gelir. `ptr = &y` syntax hatasidir. `*ptr` degeri degisebilir yani x'in degeri degisebilir ancak bu ptr hep o adresi tutacaktir. Boyle pointerlara **const to pointer** denir. top level const ve right const' da denir.
+- `const int * ptr = &x` ve ayni anlama gelen `int const * ptr = &x` ptr yoluyla ptr'nin gosterdigi degiskenin sabit olacagi anlamina gelir. `ptr` `x`'i salt okuma amaci ile gosteriyor. `*ptr  = y` hata verecektir ancak ptr baska bir degeri gosterebilir, `ptr = &y` ifadesi mumkundur. Bu sekilde tanimlanmis pointerlara **pointer to const** denir. low level const ve left const' da denir.
+- Kisacasi const hangi ifadeden once gelirse const olan odur.  
+- `const int* const ptr` sabit olan bir degerin adresini surekli tutacak olan bir pointerdir.
+- Cogunlukla low level const kullanilir. Salt okunacak olan sabit degeri tutan bir pointer.
+- const dogrulugu: const ile tanimlanmasi gereken butun degiskenler const anahtar sozcugu ile tanimlanmis olmalidir.
+- access fonksiyonlarinda erisilen degiskenin const olarak tanimlanmamasi cokca yapilan hatalardandir.
+- `void func(int * p)` ben bu fonksiyonda p'nin tuttugu degiskeni set edecegim demek iken `void func(const int *p)` ben bu fonksiyonda p'nin tuttugu degiskeni sadece okuyacagim demektir.
+- `const int*` degerinin `int*` degerine typecast edilmesi yanlis iken `int*` degerinin `const int*` degerine donusturulmesi hat degildir.
+    ```
+    int x = 10;
+    const int* ptr = &x; //burada bir hata yok.
+    ```
+
+    ```
+    const int x = 10;
+    int* ptr = &x; //burada bir hata olur. const olan x'i gosterdiginin const olmadigini soyleyen ptr ile gostermeye calistik.
+    ```
+- Dizi ustunde islem yapan fonksiyonlar dizinin adresini ve boyutunu isterler. Bu cagriyi yapacak fonksiyon bu iki degeri geciyor olmalidir. `void printArray(const int* p, size_t size)`.
+- Dizinin belirli kismi yazdirilmak istenirse mesela 5. elemandan itibaren 3 elemena yazilmak istenen a dizisi icin `printArray(a+5, 3)` notasyonu kullanilir. `a+5` yerine `&a[5]` yazilabilir.
+- Bir ornek kod: ortalama alma fonksiyonu aldigi pointeri yine bir baska fonksiyon olan dizi toplama fonksiyonuna vermekte:
+    ```
+    int sum_array(const int* p, int size)
+    {
+        int sum = 0;
+
+        while(size--){
+            sum += *p;
+            ++p;
+        }
+
+        return sum;
+    }
+
+    double get_mean(const int* p, int size)
+    {
+        return(double)sum_array(p, size)/size;
+    }
+
+    int main()
+    {
+        int a[SIZE];
+
+        randomize();
+        set_array_random(a, SIZE);
+        print_array(a, SIZE);
+
+        printf("mean value of array = %f\n", get_mean(a, SIZE));    
+    }
+    ```
+
+## 30 Pointer - Pointer Parametreli Fonksiyonlar - Pointer Idiomlari - Typedef 1
+
+- Birden fazla geri donuse ihtiyaci olan fonksiyonun bunu yapmasi icin ilk metod call by reference'dir. `void get_array_max_min(const int* array, int size, int* max, int*min)` seklinde max ve min return edilmek yerine doldurulur.
+- Adres alan fonksiyonlar bu adreslerdeki degiskenleri baska fonksiyonlara verebilirler.
+- Bir fonksiyona bir arrayin iki elemaninin pointer uzerinden gecmek icin iki notasyon vardir.
+    ```
+    swap(&p[k], &p[k+1]); 
+    swap(p+k, p+k+1);
+    ```
+- Pointer degiskeni fonksiyona parametre olarak vermenin bir yolu `int *p` iken diger yol `int p[]` dir. 
+- `void sort(int p[], int size)`'deki konvensiyon p eger bir dizinin ilk elemani ise tercih edilir, bu bir zorunluluk degildir ancak her ikisi de kullanilabilmektedir. `p[]` yaygin degildir. **Unutulmamalidir ki bir fonksiyon bir diziyi parametre alamaz.** `p[]` ilk elemandir.
+- `*p++` p'nin gosterdigi nesneye eris, ardindan p'yi bir arttir. Array islemlerinde cokca kullanilir. En yaygin idiomlardan biridir.
+    ```
+    #define SIZE 100
+    void copy_array(int *pdest, const int *psource, int n)
+    {
+        while(n--)
+            *pdest++ = *psource++;     
+    }    
+    ```
+- Bir ornek kod: a dizisinin A indisli elemanindan baslayarak b dizisinin B indisli elemanindan baslayana yere N tane eleman kopyalayan fonksiyon:
+    ```
+    void copy_partial_array(int *pdest, const int *psource, int n)    
+    {
+        while(n--)
+            *pdest++ = *psource++;     
+    }
+
+    int main()
+    {
+        int a[];
+        int b[];
+
+        copy_partial_array(b+B, a+A, N); //1.method
+        copy_partial_array(&b[B], &a[A], N); //2.method
+    }    
+   ```
+- ++ ve -- operatorunun operandi bir dizi olamaz. Dizinin ismi burada kullanilamaz.
+- Bir ornek `++*p++` sagdan sola oncelik seviyesi ile okursak `(++(*(p++)))` demek yani dongude ise her elemanin degerini 1 artirarak ilerler.
+- `px == py` icin adreslerin ya ayni nesnenin adresi olmasi gerekiyor ya ayni dizinin bittigi yerin adresi olmasi gerekiyor ya da null pointer olmasi gerekiyor.
+- a dizinin bittigi yerin adresi `pe = a+SIZE` olarak tanimlayip, diziyi donerken karsilastirma olarak kullanilabilir `while(ps != pe)`. Buna range denir, `[p1 p2)` gibi bizim durumda `[ps,pe)`.
+- `px == py` x'i ve y'yi gosteren iki farkli adresi karsilastirirken `*px == *py` x'in ve y'nin tuttugu adreslerin icindeki degerleri karsilastirir.
+- Bir turu temsil eden alternatif bir turu - tur ismini olusturmak mumkundur. Buna **alias** takma isim denir.
+- **typedef** bir ture esisim olacak yeni bir tur ismi bildirimidir `int` yerine `tamsayi` gibi bir isim vermek gibidir. Derleyici artik tamsayi'yi taniyacaktir.
+    ```
+    typedef int Word; // artik Word int yerine gececektir.
+
+    Word x = 5; // bu sekilde tanimlama yapilabilir.
+    Word func(int...); // return degeri Word yani int olan bir fonksiyon
+    ```
+- `typedef int* IPTR` int* turu yerinie IPTR denebilir. `IPTR p = &x`. Scope'u belirlemek icin makrolar yerine kullanilir. Ayrica birden fazla pointeri tek satirda tanimlamak yine typedef ile mumkundur.
+    ```
+    define IPTR int*
+
+    typedef int* Iptr;
+
+    int main()
+    {
+        IPTR p1, p2; //int *p1, p2;
+        Iptr p1, p2; //int *p1, *p2;
+    }
+    ```
+- typedef tanimlama yol haritasi
+    - hangi ture es isim verecekseniz o turden bir degisken tanimlayin. `int x;`
+    - tanimlamanin basina typedef anahtar sozcugunu yerlestirin. `typedef int x;`
+    - degiskene verdiginiz ismi o degiskenin turune vereceginiz es isimle degistiriniz. `typedef int Myint;`
+- Dizi icin `typedef int INTA[10];` 10 elemanli bir dizinin typedef'idir. `INTA10 a, b, c;` icin `int a[10], b[10], c[10];`
+- typedef bildiriminin avantajlari
+  - Karmasik bildirimleri okumasi daha kolay bir hale getirir.
+  - Ara degisken basliklari yaratarak ana tur isimlerini kullanmak yerine bu ara degiskenlerden turetmeler yapilir. `typedef double Dollar` diyip ardindan dolarla ilgili degiskenlerin bu degikenden turetilerek kullanilmasi gibi `Dollar sum_account, expenditure` gibi.
+  - Ilerde Dollar turunun tuttugu dolar degerlerinin turunu degistirmek istersek sadece typedef bildirimini degistirerek yapabiliriz.
+- typedef bildirimiyle olusturulan isim baska bir typedef turu olusturuluken kullanilabilir `typedef int Word` icin `typedef Word* Wordptr`
+- standart kutuphanelerde `int32_t` `uint16_t` gibi typedefler vardir.
