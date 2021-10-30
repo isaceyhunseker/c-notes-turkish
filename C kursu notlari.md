@@ -61,9 +61,11 @@
 - Embedded systemde macrolar adresleri tutmak icin de kullanir.
 - Fonksiyonel makroda makro isminden sonra  hemen parantez tokeninin gelmesi gerekiyor.
 - Islem onceligi durumundan kacmak icin fonksiyon makrolarinda degiskeni () icinde yazmaktayiz
+
     ```
     #define ISLEAP(x)  ((y) % 4 == 0 && ((y) % 100 || (y) % 400 == 0)) 
     ```
+
 - Kodu kucuk ve sik cagirilan fonksiyonlar cagirildiginda fonksiyon yazmak maliyeti daha fazladir. Bu durumda makrolar daha anlamlidir(fonksiyonel makrolar)
 - Fonksiyonel makronun icine baska bir makro yazilabilir.
 
@@ -160,7 +162,7 @@
         return sum;
     }
     ```
-    
+
 ## 21 goto - Implicit Type Conversions(Tur Donusumleri)
 
 - goto statement, iki farkli sekilde yapilabilir: long jump ve local jump(near jump)
@@ -179,31 +181,31 @@
   ```
 - goto kontrol deyimi ile fonksiyonda daha yukaridaki bir deyime programin akisi yonlendirilmemelidir.
 - cok ic ice tasarlanan dongulerde butun donguden cikmak icin goto kullanilabilir. goto kullanilmaz ise flag set edilip bu flagin degerine gore breakler calistirilir, bu durum goto kullanmaktan cok daha komplikedir.
-```
-for ...{
-    //statement
-    while...{
+    ```
+    for ...{
         //statement
-        for ...{
+        while...{
             //statement
-            if ...{
+            for ...{
                 //statement
-                goto out;
-                  }
-               }
+                if ...{
+                    //statement
+                    goto out;
+                    }
+                }
+                }
             }
-        }
-out:
-    //statement       
-```
+    out:
+        //statement       
+    ```
 - Type Conversion bir ifadenin dogrudan degil farkli bir turde ifade edilerek o turde kullanilmasina verilen addir.
 - implicit type conversion: implicit ortulu demek ustu kapali bir sekilde tur donusumu yapilmasidir. Implicit donusum icin bir talimat verilmiyor, derleyici dilin kurallari geregi tur donusumunu otomati yapiyor.Mesela bir int val ile double val ile toplama islemi yaparsak int val bu toplama islemnine double value olarak girer. Bunu derleyici otomatik olarak yapar.
 - explicit type conversion: burada acikca derleyiciye bir operator tarafindan turu donusturmesi gerektigi soyleniyor, bu operatorun adi **type-cast** operatorudur.
 - implicit type conversion, usual arithmetic conversion'da operatorlerin kullanilmasi sonucu otomatik olarak yapilan ortulu donusumlerdir. Operatorler = +->< vs
 - bir diger implicit type conversion, atama esnasinda yapilan donusumlerdir. Atama veya kopyalama yapilirken tur otomatik olarak degistirilir. 
-    - `int ival = 3.4` degerinin 3 olarak alinmasi gibi.
-    - Fonksiyon cagrisindaki parametre gonderilen parametreden farkliysa yine otomatik olarak degistirilmesi gibi.
-    - `return ival;` statementinda da otomatik olarak degistirilir.
+  - `int ival = 3.4` degerinin 3 olarak alinmasi gibi.
+  - Fonksiyon cagrisindaki parametre gonderilen parametreden farkliysa yine otomatik olarak degistirilmesi gibi.
+  - `return ival;` statementinda da otomatik olarak degistirilir.
 - Genel olarak yaklasim veri kaybinin engellemeye yoneliktir.
 - Degiskenlerin rank siralamasi asagida verilmistir:
     ```
@@ -255,3 +257,100 @@ out:
 
     double dval = (double)x / y;
     ```
+
+## 27 Pointer Giris
+
+- Pointer adres anlamina gelen bir sozcuk.
+- Pointer'lar ikiye ayrilir, Object Pointers ve Function Pointers.
+- Nesnenin bellekte nerede oldugu bilgisi, nesnenin adresidir.
+- Degiskenin turu ne ise adresi de * tur seklinde gosteriliyor. Haliyle nesne turu kadar adres turu vardir.
+
+    ```
+    int *int
+    double *double
+    ```
+- `int *ptr` ptr is a pointer to int...
+- Tokenlar arasindaki bosluk karakterlerinin bir etkisi olmadigi icin asterix atomunun nereye bitisik oldugu cok onemli degil.
+- * sadece bir sonraki degiskeni niteler: `int *pointer, non-pointer` gibi. Burada ikinci degisken `int` turundedir.
+- pointer turlerinin hepsi 4 byte buyuklugundedir, *char'da *long long da ayni buyukluktedir.
+- `&` `address of` operatorudur, (adres operatoru)
+- `*` `dereferencing / indirection` operatorudur, (icerik operatoru)
+- `[ ] index / subscript` operatoru
+- `->` `member selection op.` (arrow operator) ok operatoru.
+- Ornek kullanim:
+    ```
+    int x = 10;
+    int y = 30;
+
+    int *p = &x;
+    p = &y;
+    ```
+- adres degiskeninin icindeki deger `printf("&x = %p\n", &x)` ya da `printf("ptr = %p\n", ptr)` seklinde yazdirilabilir.
+- array decay, array to pointer conversion: Bir dizinin ismi bir ifade icinde kullanildiginda derleyici otomatik olarak o ismi dizinin ilk elemaninin adresine donusturuyor. Asagidaki iki satir bu ozellikten dolayi ayni anlama gelmektedir.
+    ``` 
+    int *ptr = &a[0];
+    int *ptr = a;
+    ```
+- Bu durum sizeof operatorunde gecerli degildir. Iki degisken farkli iki sonuc uretir.
+- Bir nesnenin adresi degistirilemez. Nesne bellekte bir yerden bir yere tasinamaz.
+- Derefencing-Indirection Operatoru(*): Icerik operatoru: Adresi verilen degiskenin degerini verir.
+- Icerik operatorunun operandi bir adres olmali.
+- Bir kodun karmasik gorunmesi icin yapilmasina obfuscation denir, anlami deg ismeden anlasilmaz hale getirilmeye yarar.
+- Icerik operandi dizinin ilk elemanini gosterir.Asagidaki kodda a[0] 100 degerini alir.
+    ```
+    int a[] = {10,20,30,40};
+    *a = 999;
+    ``` 
+- pointee pointerin gosterdigi nesnedir.
+    ```
+    int *ptr
+    ptr pointer
+    *ptr pointee
+    ```
+- C de pointerlar call by reference cagri modelinde kullaniliyor. Bu temel fonksiyonudur.
+- scanf call by reference bir fonksiyon cunku aldigi argumanin degerini degistiriyor.
+
+## 28 Pointer - Call by Reference vs Call by Value - Pointer Aritmetigi
+
+- Call by Reference = kendisini cagiran fonksiyona kendisine verilen degeri geri iletmeye calisan fonksiyonlar.
+- Bunu yapmanin pointersiz yolu return etmektir. Buna geri donus mekanizmasi denir. Bazi durumlarda pointer kullanmamak daha kolay daha yalin ve pratiktir.
+- Ancak komplike senaryolarda call by reference kullanmak daha avantajlidir.
+- Bir senaryo: Geri donus degeri fonksiyonun basari degerini donerken pointer ile gecilen arguman da hesaplanan degeri tutuyor olabilir bu durumda yine hesaplanan degeri call by reference ile almak faydalidir.
+- Call by reference ile calismak daha az maliyetlidir. Cunku call by value'da return edilen degeri tutan bir degisken ve asil degisken varken diger durumda sadece bir degisken vardir. Kopyalama yapilmaz. Iste bu kopyalama maliyeti call by referenceyi cazip kilmaktadir.
+- Degiskenin - Yapinin boyutu ne kadar buyuk olursa olsun, pointerin boyutu degismemektedir. Bu sekilde cikti veren fonksiyonlarin yanina `//out` yazilir, `void foo(T *ptr)//out`;
+- Call by Reference ile alinan adreslerdeki degerler sadece input olarak kullanilacaksa fonksiyon declarasyonunda onlarin basina `const` anahtar sozcugu kullanilir. Bu sekilde bu degisken sadece salt okuma amacli kullanilir.
+    ``` 
+    void add_two_num(const int* pleft, const int* pright, int* presult);   
+    
+    void func(int *ptr); //output-param
+    void foo (const int *ptr); //input-param
+    ```
+- Input parametresi kucuk boyutlu ise(20 byte sinir olabilir) call by value ile alabilir, eger buyuk bir input ise call by reference ile alinmasi tercih edilmelidir.
+- Dizilerin dogrudan call by value olarak fonksiyona gonderilmeleri mumkun degildir. Donus degeri de dizi olamaz. C dilinde Bir fonksiyonun
+    - Parametresi dizi olamaz
+    - Geri donus degeri bir dizi olamaz.
+    
+- **Pointer Aritmetigi:** C'de bir adres ile bir tamsayi toplanabilir adresten tamsayi cikartilabilir. Tamsayidan adres cikartilasi syntax hatasidir.
+- Bu islemlerin sonucu adrestir, adres ile tamsayi isleme girdiginde cevap adrestir.
+- Dizinin bir elemaninin adresini 1 ile toplarsak bir sonraki elemanin adresini elde ederiz. Bu pointer aritmetigi sayesinde ptr'nin 1 artamasi icin sizeof(int) ile toplamak yerine 1 ile toplayabiliyoruz.
+- Haliyle `a[10]` dizisi icin `a+i` ile `&a[i]` i'nin artan degerleri icin ayni sekilde dizi icinde ilerler.`a[b] = *(a+b)` ve `b[a] = *(a+b)`
+- Pointer degiskenin bir artmasi gosterdigi dizi elemanindan bir sonrakisini gostermesi anlamina geliyor.
+    ```
+    for (int i = 0; i < 10; ++i){
+        printf("%d %d %d\n", *ptr, a[i], *(a+i));
+        ++ptr;
+    }    
+    ```
+- `++cnt` cnt degerinin degeri 1 artar iken `++ptr` ptr gostericisinin dizinin bir sonraki elemaninin adresini gostermesi demektir.
+- Pointer aritmetiginde iki adres toplanamaz. Syntax hatasidir.
+- Iki adres birbirinden cikartilirsa isaretli bir tamsayi elde edilir `(a+5) - (a+3)` `2` tamsayi degerine esittir. Ancak ayni dizi elemanlarini tutan adreslerde kullanmak mantiklidir.
+- a dizisinin i elemanina erisirken olan:`a[i]` a adresi + i tamsayisi ise `i[a]` da i tamsayisi + a adresi oldugu icin ayni anlama gelir.
+- p adres olmak uzere `*p` ile `p[0]` arasinda hicbir farklilik yoktur. `p[-3]` ile `*p[p-3]` de aynidir.
+- Dizinin olmayan bir elemanina erismeye calismak syntax hatasi degil ancak tanimsiz bir davranistir. 
+- C dilinde pointer degisken ya `valid` ya da `invalid` `state`'dedir. invalid pointeri sadece atama yapmak icin kullanilmalidir.
+- Cop degerdeki(ilk deger atanmamis) pointerlar gecersiz pointerlardir. Bu pointera ilk deger adresi atamak disinda baska kullanilamaz.Bu pointer'lara `wild pointer` denir.
+- Bir nesnenin adresi olmayan bir pointer'da gecersiz pointerdir. 5 elemanli bir dizinin son elemani `a[4]` iken, `a[5]` gecerlidir ancak kullanmak istersek derefence edersek tanimsizdir.
+- Bir adres hayati devam eden bir nesnenin adresi ise gecerlidir, ayrica dizinin bittigi yerden sonraki adres gecerlidir ancak icerik operatorunun operandi olarak kullanildiginda tanimsizdir *bu durum daha detayli incelenecektir.*
+
+## 29 
+
