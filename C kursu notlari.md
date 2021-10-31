@@ -418,7 +418,7 @@
     }
     ```
 
-## 30 Pointer - Pointer Parametreli Fonksiyonlar - Pointer Idiomlari - Typedef 1
+## 30 Pointer - Pointer Parametreli Fonksiyonlar - Pointer Idiomlari - typedef 1
 
 - Birden fazla geri donuse ihtiyaci olan fonksiyonun bunu yapmasi icin ilk metod call by reference'dir. `void get_array_max_min(const int* array, int size, int* max, int*min)` seklinde max ve min return edilmek yerine doldurulur.
 - Adres alan fonksiyonlar bu adreslerdeki degiskenleri baska fonksiyonlara verebilirler.
@@ -491,3 +491,144 @@
   - Ilerde Dollar turunun tuttugu dolar degerlerinin turunu degistirmek istersek sadece typedef bildirimini degistirerek yapabiliriz.
 - typedef bildirimiyle olusturulan isim baska bir typedef turu olusturuluken kullanilabilir `typedef int Word` icin `typedef Word* Wordptr`
 - standart kutuphanelerde `int32_t` `uint16_t` gibi typedefler vardir.
+
+## 31 Standart kutuphene ve typedef bildirimleri - size_t - Adres Donduren Fonksiyonlar
+
+- Bir typedef ornegi: `typedef int Bool` boylece derleyici `Bool` turunde calisabilecek.
+- Standart kutuphane typedef bildirimlerini okunabilirlik ve tasinabilirlik amacli kullaniyor.
+- `size_t` sizeof operatorunun urettigi degerin turudur. `typedef unsigned int size_t` seklinde tanimlanabilir. Ancak bu tanim derleyiciye birakilmistir. `unsigned int` olmak zorunda degildir. Gercek tur yerine typedef kullanildiginda bu gibi durumlarda derleyiciye hareket alani birakiliyor. `size_t`'nin buyuklugu derleyicideki int degerinin buyuklugune gore degisebiliyor.Ya da onu `long` turune atayabiliriz.
+- Bununla beraber, `ptrdiff_t`, `time_t`, `clock_t`, `fpos_t` ve `ldiv_t` gibi standart typedefler de vardir.
+- `strlen`, `malloc`, `memcpy` gibi fonksiyonlar `size_t` parametresini kullanan bazi standart C fonksiyonlarinda tasinabilirlik amaciyla bu method kullanilmistir.
+- standart kutuphanenin `size_t` kullandigi yerde(parametre turu ya da geri donus degeri turu olarak) biz de `size_t` ile o degiskeni almak zorundayiz ki tasinabilirlik sorunumuz olmasin.
+- Standart kutuphane `size_t` tur es isminin istenildigi durumlar:
+  - Bir dizi boyutu isteyen fonksiyon parametrelerinin turu olarak.
+  - Yazi uzunlugu turu olarak.
+  - sizeof degeri isteyen parametreler.
+  - tane(adet) turu.
+- `stddef.h` kutuphanesi bir cok makro ve typedef iceren cok buyuk olmayan bir kutuphanedir.
+- `size_t` degerinin printf'de yazdirmak icin `%zu` set edilmistir: `printf("sizeof(int) = %zu\n", sizeof(int))`.
+- **Functions Returning Pointers**, Adres donduren fonksiyonlar C'de en cok kullanilan yapilardan biridir. Fonksiyonun geri donus mekanizmasi ile bir nesneyi teslim etmesi demektir.
+- `int *func(void)` seklinde tanimlanir. `int *xptr = func()` seklinde kullanilabilir. `return &x` gibi donebilir.
+- Bu sekilde pointerin hangi adresi tutacagini dogrudan vermek yerine fonksiyonun ciktisina gore belirleyebiliyoruz.
+- Otomatik omurlu degisken, bu kodun yurutulmesi surecinde hayatta olan ve kod blogu bitince sifirlanan kodlardir. Otomatik omurlu degiskenin adresini fonksiyon disina return eden pointer, invalid pointer olur.
+    ```
+    int* foobar(void)
+    {
+        int sum = 0;
+
+        for(int i = 0; i<10; ++i){
+            sum +=i
+        }
+        
+        return &sum;
+    }
+
+    int main()
+    {
+        int* ptr = foobar(); // foobar yerel bir degisken donmektedir. Haliyle bu degiskenin omru bittigi icin undefined behaviour.
+    }
+    ```
+- Ancak sum degiskeni `static int sum = 0` olarak tanimlansa idi bir undefined behaviour olmazdi, cunku static omurlu `sum` degiskeni program calistigi surece var olacakti. Haliyle global degiskenler, static anahtar sozcugu ile tanimlanan yerel degiskenler ve string literaller `"string literal"`
+- Adres donduren bir fonksiyon asla ve asla otomatik omurlu bir nesnenin adresini dondurmemelidir.
+- Bir fonksiyon static omurlu nesne adresi donduruyorsa fonksiyona yapilan her cagri ayni adresi donuyor olmali.
+- Fonksiyon kendisini cagiran koddan bir nesnenin adresini alir adresini aldigi nesnenin adresini dondurur.
+- Bir kod ornegi: Bir dizinin en buyuk elemaninin adresini donduren fonksiyon:
+    ```
+    #define SIZE 20
+    int* array_max(const int* pa, size_t size)
+    {
+        int* pmax = (int *) pa;// const cast - const'tan int'te atama yapilamayacagi icin.
+        for (size_t k = 1; k < size; k++)
+        {
+            if(pa[k] > *pmax)
+                pmax = (int *)&pa[k];
+        }
+        return pmax;// bu adres pa dizisinden cekildigi icin otomatik omurlu degildir, dizinin icindeki global adreslerden biridir.
+    }
+
+    int* array_min(const int* pa, size_t size)
+    {
+        int* pmin = (int *) pa;// const cast - const'tan int'te atama yapilamayacagi icin.
+        for (size_t k = 1; k < size; k++)
+        {
+            if(pa[k] < *pmin)
+                pmin = (int *)&pa[k];
+        }
+        return pmin;// bu adres pa dizisinden cekildigi icin otomatik omurlu degildir, dizinin icindeki global adreslerden biridir.
+    }
+    
+    int main()
+    {
+        int a[SIZE];
+
+        randomize();
+        set_random_array(a, SIZE);
+        print_array(a, SIZE);
+
+        int *pmax = array_max(a, SIZE);
+        int *pmin = array_min(a, SIZE);
+
+        printf("max = %d\n", *pmax);
+        printf("indis of max = %d\n", pmax-a); //pmax - a pmax elemaninin bulundugu indisi verir
+        *pmax = -1;// en buyuk elemani -1'e esitledik, boylece test edebilecegiz kodumuzun dogru calistigini
+        print_array(a, SIZE);
+        print_array(a, pmax - a + 1); //dizinin basindan en buyuk elemani kadar ve o eleman dahil yazdirir.
+        print_array(pmax, SIZE - (pmax - a)); //dizinin en buyuk elemanindan sonuna kadar yazdirir.
+
+        if(pmax > pmin){// max'in adresi min'den buyuk mu max dizide daha once mi geliyor.
+            print_array(pmax, pmin - pmax + 1);// max onceyse maxtan mine kadar yazdir
+        }
+        else{
+            print_array(pmin, pmax - pmin + 1);// min onceyse minden maxa kadar yazdir.
+        }
+
+        print_array(pmax < pmin ? pmax : pmin, abs(pmax - pmin));// yukardaki islemin aynisini yapan tek satir kod blogu
+        swap(array_min(a, SIZE), array_max(a, SIZE));// dizinin max ve min degerlerinin yerlerini degistirir. 
+    }
+    ```
+
+## 32 Pointer - Null Pointer - Char Pointeri
+
+- **Otomatik omurlu bir nesnenin adresiyle asla donulmemelidir.**
+- `NULL` bir object-type makrodur. Bir anahtar sozcuk degildir. Identifier vs degildir. NULL standart bir makrodur.(`stdio.h`, `stdlib.h`, `stddef.h`, `stddef.h`, `time.h`)
+- NULL pointer herhangi turden bir pointer degiskene atanabilen, ilk deger olarak verilebilen bir sabit ifadesidir.
+- NULL pointer semantik(mantiken-syntax degil) olarak hic bir nesneyi gostermeyen bir pointer'dir.
+- Degeri **NULL** olan bir pointer degiskeni dereference etmek **undefined behaviour**'dur.
+- Bir pointerin adresinin null olup olmadigi `if(p == NULL)` gibi yazarak sinanabilir.
+- C'de Pointer olmayan degiskenlere `NULL` atamasi yapilamaz, sadece pointer degiskenlerde `NULL` makrosu kullanilabilir.
+- C'de lojik ifade beklenen yerlerde(lojik operatorler, dongu karsilastirma operatorleri vs..) adres ifadeleri de kullanilabilir.
+  - `if(ptr != NULL)` ve `if (ptr)`
+  - `while(ptr)`
+  - `ptr ? x : y`
+- Aritmetik turden static omurlu degiskenlere ilk deger verilmediginde bunlar hayata 0 degeri ile baslar ve de Aritmetik turden static omurlu degiskenlerin ilk deger verilmediginde bunlar da hayata `NULL` pointer degeri ile baslar.
+- Bir pointer degiskene tam sayi sabiti olarak 0 atanirsa bu gecerlidir, ve bu durumda derleyici 0 tam sayi sabitini `NULL` pointer'a donusturur `ptr = 0`. Ancak  `ptr = NULL` tercih edilir.
+- `int a[5]` icin a'nin turu `int[5]`, double `da[20]` nin turu `double[20]`'dir. `int[5] = {1,2,4}` icin nasil `int[3]` ve `int[4]` 0 oluyorsa. Pointer arrayde'de `int *p[20] = {&x, &y}` gibi bir tanimda geri kalan 18 eleman `NULL` pointer olur.
+- `int *p[20]` 20 tane `int*` turunden pointer iceren bir pointer arrayidir.
+- Bazi geri donus degeri pointer olan fonksiyonlarin basarili olduklarinda donus degeri nesne adresi iken hata durumunda `NULL` doner. Mesela fopen() fonksiyonu basarili olursa *FILE donerken basarisiz olursa `NULL` doner. Bu basarisiz olan pointer return eden fonksiyonlar `NULL` donmesi durumu standart kutuphanelerde ve bizim yazacagimiz kutuphanelerde de cokca kullanilir.
+- Arama fonksiyonlari(search - find fonskiyonlari.) da arama sonucu olarak bulunan nesnenin adresini donmektedir, yani pointer doner. Eger aranilan deger bulunamazsa `NULL` pointer doner.
+- Bir kod ornegi: Bir int dizide bir deger arayan search_in_array isimli bir fonksiyon tanimlayin
+    ``` 
+    int* search_in_array(const int* p, size_t size, const int val)
+    {
+        for (size_t i; i < size; i++)
+        {
+            if (*p == val)
+                return (int*)p;
+            p++;
+        }
+
+        return NULL;
+    }
+    ```
+- Bizden nesne adresi eden fonksiyona null pointer gecmemeliyiz`void func(int* p)` Ancak bazi fonksiyonlar pointer parametresine null parametresini alabilir, bu fonksiyonlar null pointer icin de iceride opsiyonu olan fonksiyonlardir. Mesela fflush fonksiyonu null pointeri alirsa ayri bir is yapar null pointer gecmezsek ayri bir is yapar.
+- NULL pointeri ayrica flag gibi de kullanilabilir, bir pointer basta NULL tanimlanarak mesela if'te nesne adresi ataniyorsa buradan if'e girip girmedigi kontrol edilebilir.
+- Dinamik omurlu nesne adresi tutan bir pointerin, nesnesinin omru bittiginde `NULL` pointera atanir.
+- C dilinde yazilar char dizilerde tutuldugu icin `strlen`, `strspn`, `strpbrk` gibi fonksiyonlar char pointer `const char*` ya da `char *` parametresi alir.
+- C'de yazilar null terminated olarak tanimlanir. Haliyle stringin yani char dizisinin son elemani NULL oldugu icin diger arraylerde oldugu gibi boyutunun fonksiyona verilmesine gerek yoktur. for loopu `\0`(null karakter) ile karsilasinca duracak sekilde doner.
+    ```
+    void print_str(const char* p){
+       for(int i = 0; p[i] != '\0`; ++i){
+        printf("%c", p[i]);
+        }
+    }
+    ```
