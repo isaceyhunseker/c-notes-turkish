@@ -60,10 +60,12 @@
 - Stdbool.h bool true false’i vs icerir.
 - Embedded systemde macrolar adresleri tutmak icin de kullanir.
 - Fonksiyonel makroda makro isminden sonra  hemen parantez tokeninin gelmesi gerekiyor.
-- Islem onceligi durumundan kacmak icin fonksiyon makrolarinda degiskeni () icinde yazmaktayiz
-    ```
+- Islem onceligi durumundan kacmak icin fonksiyon makrolarinda degiskeni () icinde yazmaktayiz.
+
+    ```c
     #define ISLEAP(x)  ((y) % 4 == 0 && ((y) % 100 || (y) % 400 == 0)) 
-   ```
+    ```
+
 - Kodu kucuk ve sik cagirilan fonksiyonlar cagirildiginda fonksiyon yazmak maliyeti daha fazladir. Bu durumda makrolar daha anlamlidir(fonksiyonel makrolar)
 - Fonksiyonel makronun icine baska bir makro yazilabilir.
 
@@ -75,12 +77,15 @@
 - Makrolari kullanirsak fonksiyon pointeri gibi bir durum kalmiyor.
 - Makrolarin ciktisi olarak tanimsiz ifadeler olusabilir - kodlama hatasina musait.
 - #a onu makroda kullanilirsa a'yi cift tirnak icine alir. Haliyle bu asagidaki iki komut ayni anlama gelir:
-    ```
+
+    ```c
     #define iprint(x) pritnf("%d\n", x)
     #define iprint(x) printf(#x)
     ```
+
 - Kosullu derleme makrolari:
-    ```
+
+    ```c
     #undef
     #if
     #else
@@ -89,6 +94,7 @@
     #ifdef
     #ifndef
     ```
+
 - Farkli donanimlar icin bazi komutlar derleyiciye verilmeli bazi komutlar ve bildirimler verilmemeli bu yuzden bu makrolarla hangi bildirimlerin derleyiciye verilecegini secmemizi saglar.
 - Farkli donanimin yaninda farkli os farkli dil versiyon ve lokalizasyon da bu makrolarin kullanim sebepleri arasinda gorulebilir.
 - Bu ifadelere preprocessor expressions deniyor.
@@ -99,7 +105,8 @@
 - Yapi bildirimi gibi bazi bildirimlerin ikinci kez gorulmesi syntax hatasidir.
 - **Multiple Inclusion Guard:** Bildirimin tekrarlanmasini engellemek istiyoruz, cunku derleyici birden fazla gorurse bu bildirimi syntax hatasina sebep oluyor. Bunu engellemek icin kullanilan bir metod.
 - Bir baslik dosyasinin birden fazla kez dahil edilmesini engelleyen idiomatic yapidir. `#ifndef`, `#define` ve `#endif` kullanilarak yapilir.
-    ```
+
+    ```c
     #ifndef NUTILITY_H
     #define NUTILITY_H
     ...
@@ -107,6 +114,7 @@
     ...
     #endif
     ```
+
 - `#pragma once` da bu isi yapmak icin gelistirilmistir ancak butun derleyiciler tarafindan desteklenmemektedir, **standart degildir**
 - `#ifndef` yerine `#if !defined(NUTILY_H)` ayni seydir.
 - `#undef` bir makronun tanimini ortadan kaldirir, makroyu tanimsiz hale getirir.
@@ -116,12 +124,14 @@
 - Makroyu yeniden tanimlamak icin once onu `#undef` etmek gerekmektedir.
 - predefined symbolic constant(ontanimli sembolik sabitler): bir define komutu ile tanimlanmamis olmalarini karsin onislemci tarafindan tanimli kabul edilen, dil tarafindan onceden belirlenmis onislemci isimleri. __ ile baslarlar. `__LINE__`,`__FILE__`, `__DATE__`,  `__TIME__` bunlar, bulunduklari yerin degerlerini alirlar, ornegin `__LINE__`makrosununu kullanildigi yerde line makrosunun oldugu satir numarasi icersine yazilir.
 - bunun disinda `__cplusplus` gibi yapilar da kullanilabilir, ornegin:
-    ```
+
+    ```c
     #ifndef __cplusplus
         #error this program only builded by C++ Compiler
     #endif
     ```
--  #pragma standart bir on islemci komutu ama hangi anlami yuklenecegi derleyiciler tarafindan belirlenmistir.
+
+- #pragma standart bir on islemci komutu ama hangi anlami yuklenecegi derleyiciler tarafindan belirlenmistir.
 - `#pragma warning(disable: 4244)`: 4244 numarali warningin verilmesini engeller. Derleyiciye bagli bir durumdur.
 - Makronun icinde ; olabilir, fonksiyonel makro parantez icinde yazilmis olabilir, bu parantez oncelik problemine cozum olarak koyulmus olsa dahi burada da dikkat edilmelidir.
 - Fonksiyonel makrolarda if while gibi conditional statementler yazilabilir.
@@ -137,8 +147,9 @@
 - olusma sikligi daha yuksek olan case'leri yukariya yazmakta fayda var.
 - case'lerin icinde uzun uzun islem yapmak guzel bir kod aliskanligi degildir, bunun icin bu statementlar, bir fonksiyonda toplanip fonksiyon cagirilabilir.
 - bazen case'lerden sonra asagidaki satirin da calismasi gerekir, bu durumda `case 1: foo();//fallthrough` diye comment olarak belirtilmelidir.
-- fallthrough ornegi
-    ```
+- fallthrough ornegi:
+
+    ```c
     int day_of_year(int d, int m, int y)
     {
         int sum = d;
@@ -171,15 +182,18 @@
 - goto bir labeldir(etiket). Labellar `labelname:` seklinde tanimlanir. Ve her label muhakkak bir statement icermelidir.
 - goto labellari function scope denen ozel bir tanim araligina sahiptir. Fonksiyon icindeki her alanda kullanilabilir.
 - goto syntaxi:
-  ```
-  goto label;
 
-  label:
-    //statement;  
-  ```
+    ```c
+        goto label;
+
+        label:
+        //statement;  
+    ```
+
 - goto kontrol deyimi ile fonksiyonda daha yukaridaki bir deyime programin akisi yonlendirilmemelidir.
 - cok ic ice tasarlanan dongulerde butun donguden cikmak icin goto kullanilabilir. goto kullanilmaz ise flag set edilip bu flagin degerine gore breakler calistirilir, bu durum goto kullanmaktan cok daha komplikedir.
-    ```
+
+    ```c
     for ...{
         //statement
         while...{
@@ -196,17 +210,19 @@
     out:
         //statement       
     ```
+
 - Type Conversion bir ifadenin dogrudan degil farkli bir turde ifade edilerek o turde kullanilmasina verilen addir.
 - implicit type conversion: implicit ortulu demek ustu kapali bir sekilde tur donusumu yapilmasidir. Implicit donusum icin bir talimat verilmiyor, derleyici dilin kurallari geregi tur donusumunu otomati yapiyor.Mesela bir int val ile double val ile toplama islemi yaparsak int val bu toplama islemnine double value olarak girer. Bunu derleyici otomatik olarak yapar.
 - explicit type conversion: burada acikca derleyiciye bir operator tarafindan turu donusturmesi gerektigi soyleniyor, bu operatorun adi **type-cast** operatorudur.
 - implicit type conversion, usual arithmetic conversion'da operatorlerin kullanilmasi sonucu otomatik olarak yapilan ortulu donusumlerdir. Operatorler = +->< vs
-- bir diger implicit type conversion, atama esnasinda yapilan donusumlerdir. Atama veya kopyalama yapilirken tur otomatik olarak degistirilir. 
+- bir diger implicit type conversion, atama esnasinda yapilan donusumlerdir. Atama veya kopyalama yapilirken tur otomatik olarak degistirilir.
   - `int ival = 3.4` degerinin 3 olarak alinmasi gibi.
   - Fonksiyon cagrisindaki parametre gonderilen parametreden farkliysa yine otomatik olarak degistirilmesi gibi.
   - `return ival;` statementinda da otomatik olarak degistirilir.
 - Genel olarak yaklasim veri kaybinin engellemeye yoneliktir.
 - Degiskenlerin rank siralamasi asagida verilmistir:
-    ```
+
+    ```c
     1. Grup:
     long double 
     double 
@@ -223,6 +239,7 @@
     char/signed char/ unsigned char 
     _Bool 
     ```
+
 - **1. Grup:** Bu uc operanddan birinin oldugu bir islemde diger operandin rank'i bu operanda donusturulur ve islem bu turde yapilir.
 - **2. Grup:** Bu uclude:
   - Rankler ayni ve signedness farkli ise isaretsiz olan ture donusulerek islem yapilir.
@@ -230,7 +247,8 @@
   - Rankler ve isaretler farkli ve buyuk olan rank isaretli kucuk rank isaretsiz ise, isaretsiz kucuk rank buyuk ranke sigiyorsa buyuk rankteki turde yapilir, eger tutamiyorsa isaretsiz olanin bir buyuk rankinde yapilir.
 - **3. Grup:** integral promotion, islemdeki bir ya da iki  degiskenin int alti olmasi durumunda(integral promotion bound) bu degisklerin int'e donusturulup islemin burada yapilmasidir.
 - Int to double implicit type-cast ornegi asagida verilmistir:(Usual Aritmetic Conversion)
-    ```
+
+    ```c
     int x = 12
     int y =5
 
@@ -241,6 +259,7 @@
 
     1. ile carpilmadan double turune esitlenseydi sonuc 2.0000 olacakti.
     ```
+
 - `int x = -1;` ve `unsigned int y = 1` icin `x>y` yazar isek x implicit typecast ile 4294967296 degerine donusur.
 - Toplama Carpma gibi islemlerde:
   - isaretli turlerde tasma tanimsiz davranis.
@@ -249,7 +268,8 @@
 - Gercek bir sayidan tamsayiya donusum yapildiginda onlalikli kisim gider, geri kalan kisim tamsayiya sigarsa sorun yoktur, sigmaz ise tanimsiz davranis olur.
 - Buyuk turden kucuk ture atama yapilmamalidir, yapilir ise de tur donusturme operatoru ile yapilmasi gerekir.
 - Explicit expression = (target type)expr;
-    ```
+
+    ```c
     int x = 10;
     int y = 3;
 
@@ -262,48 +282,58 @@
 - Pointer'lar ikiye ayrilir, Object Pointers ve Function Pointers.
 - Nesnenin bellekte nerede oldugu bilgisi, nesnenin adresidir.
 - Degiskenin turu ne ise adresi de * tur seklinde gosteriliyor. Haliyle nesne turu kadar adres turu vardir.
-    ```
+
+    ```c
     int *int
     double *double
     ```
+
 - `int *ptr` ptr is a pointer to int...
 - Tokenlar arasindaki bosluk karakterlerinin bir etkisi olmadigi icin asterix atomunun nereye bitisik oldugu cok onemli degil.
-- * sadece bir sonraki degiskeni niteler: `int *pointer, non-pointer` gibi. Burada ikinci degisken `int` turundedir.
-- pointer turlerinin hepsi 4 byte buyuklugundedir, *char'da *long long da ayni buyukluktedir.
+  - `*` sadece bir sonraki degiskeni niteler: `int *pointer, non-pointer` gibi. Burada ikinci degisken `int` turundedir.
+- pointer turlerinin hepsi 4 byte buyuklugundedir, *char'da*long long da ayni buyukluktedir.
 - `&` `address of` operatorudur, (adres operatoru)
 - `*` `dereferencing / indirection` operatorudur, (icerik operatoru)
 - `[ ] index / subscript` operatoru
 - `->` `member selection op.` (arrow operator) ok operatoru.
 - Ornek kullanim:
-    ```
+
+    ```c
     int x = 10;
     int y = 30;
 
     int *p = &x;
     p = &y;
     ```
+
 - adres degiskeninin icindeki deger `printf("&x = %p\n", &x)` ya da `printf("ptr = %p\n", ptr)` seklinde yazdirilabilir.
 - array decay, array to pointer conversion: Bir dizinin ismi bir ifade icinde kullanildiginda derleyici otomatik olarak o ismi dizinin ilk elemaninin adresine donusturuyor. Asagidaki iki satir bu ozellikten dolayi ayni anlama gelmektedir.
-    ``` 
+
+    ```c
     int *ptr = &a[0];
     int *ptr = a;
     ```
+
 - Bu durum sizeof operatorunde gecerli degildir. Iki degisken farkli iki sonuc uretir.
 - Bir nesnenin adresi degistirilemez. Nesne bellekte bir yerden bir yere tasinamaz.
 - Derefencing-Indirection Operatoru(*): Icerik operatoru: Adresi verilen degiskenin degerini verir.
 - Icerik operatorunun operandi bir adres olmali.
 - Bir kodun karmasik gorunmesi icin yapilmasina obfuscation denir, anlami deg ismeden anlasilmaz hale getirilmeye yarar.
 - Icerik operandi dizinin ilk elemanini gosterir.Asagidaki kodda a[0] 100 degerini alir.
-    ```
+
+    ```c
     int a[] = {10,20,30,40};
     *a = 999;
-    ``` 
-- pointee pointerin gosterdigi nesnedir.
     ```
+
+- pointee pointerin gosterdigi nesnedir.
+
+    ```c
     int *ptr
     ptr pointer
     *ptr pointee
     ```
+
 - C de pointerlar call by reference cagri modelinde kullaniliyor. Bu temel fonksiyonudur.
 - scanf call by reference bir fonksiyon cunku aldigi argumanin degerini degistiriyor.
 
@@ -316,33 +346,37 @@
 - Call by reference ile calismak daha az maliyetlidir. Cunku call by value'da return edilen degeri tutan bir degisken ve asil degisken varken diger durumda sadece bir degisken vardir. Kopyalama yapilmaz. Iste bu kopyalama maliyeti call by referenceyi cazip kilmaktadir.
 - Degiskenin - Yapinin boyutu ne kadar buyuk olursa olsun, pointerin boyutu degismemektedir. Bu sekilde cikti veren fonksiyonlarin yanina `//out` yazilir, `void foo(T *ptr)//out`;
 - Call by Reference ile alinan adreslerdeki degerler sadece input olarak kullanilacaksa fonksiyon declarasyonunda onlarin basina `const` anahtar sozcugu kullanilir. Bu sekilde bu degisken sadece salt okuma amacli kullanilir.
-    ``` 
+
+    ```c
     void add_two_num(const int* pleft, const int* pright, int* presult);   
     
     void func(int *ptr); //output-param
     void foo (const int *ptr); //input-param
     ```
+
 - Input parametresi kucuk boyutlu ise(20 byte sinir olabilir) call by value ile alabilir, eger buyuk bir input ise call by reference ile alinmasi tercih edilmelidir.
 - Dizilerin dogrudan call by value olarak fonksiyona gonderilmeleri mumkun degildir. Donus degeri de dizi olamaz. C dilinde Bir fonksiyonun
-    - Parametresi dizi olamaz
-    - Geri donus degeri bir dizi olamaz.
+  - Parametresi dizi olamaz
+  - Geri donus degeri bir dizi olamaz.
 - **Pointer Aritmetigi:** C'de bir adres ile bir tamsayi toplanabilir adresten tamsayi cikartilabilir. Tamsayidan adres cikartilasi syntax hatasidir.
 - Bu islemlerin sonucu adrestir, adres ile tamsayi isleme girdiginde cevap adrestir.
 - Dizinin bir elemaninin adresini 1 ile toplarsak bir sonraki elemanin adresini elde ederiz. Bu pointer aritmetigi sayesinde ptr'nin 1 artamasi icin sizeof(int) ile toplamak yerine 1 ile toplayabiliyoruz.
 - Haliyle `a[10]` dizisi icin `a+i` ile `&a[i]` i'nin artan degerleri icin ayni sekilde dizi icinde ilerler.`a[b] = *(a+b)` ve `b[a] = *(a+b)`
 - Pointer degiskenin bir artmasi gosterdigi dizi elemanindan bir sonrakisini gostermesi anlamina geliyor.
-    ```
+
+    ```c
     for (int i = 0; i < 10; ++i){
         printf("%d %d %d\n", *ptr, a[i], *(a+i));
         ++ptr;
     }    
     ```
+
 - `++cnt` cnt degerinin degeri 1 artar iken `++ptr` ptr gostericisinin dizinin bir sonraki elemaninin adresini gostermesi demektir.
 - Pointer aritmetiginde iki adres toplanamaz. Syntax hatasidir.
 - Iki adres birbirinden cikartilirsa isaretli bir tamsayi elde edilir `(a+5) - (a+3)` `2` tamsayi degerine esittir. Ancak ayni dizi elemanlarini tutan adreslerde kullanmak mantiklidir.
 - a dizisinin i elemanina erisirken olan:`a[i]` a adresi + i tamsayisi ise `i[a]` da i tamsayisi + a adresi oldugu icin ayni anlama gelir.
 - p adres olmak uzere `*p` ile `p[0]` arasinda hicbir farklilik yoktur. `p[-3]` ile `*p[p-3]` de aynidir.
-- Dizinin olmayan bir elemanina erismeye calismak syntax hatasi degil ancak tanimsiz bir davranistir. 
+- Dizinin olmayan bir elemanina erismeye calismak syntax hatasi degil ancak tanimsiz bir davranistir.
 - C dilinde pointer degisken ya `valid` ya da `invalid` `state`'dedir. invalid pointeri sadece atama yapmak icin kullanilmalidir.
 - Cop degerdeki(ilk deger atanmamis) pointerlar gecersiz pointerlardir. Bu pointera ilk deger adresi atamak disinda baska kullanilamaz.Bu pointer'lara `wild pointer` denir.
 - Bir nesnenin adresi olmayan bir pointer'da gecersiz pointerdir. 5 elemanli bir dizinin son elemani `a[4]` iken, `a[5]` gecerlidir ancak kullanmak istersek derefence edersek tanimsizdir.
@@ -376,19 +410,22 @@
 - access fonksiyonlarinda erisilen degiskenin const olarak tanimlanmamasi cokca yapilan hatalardandir.
 - `void func(int * p)` ben bu fonksiyonda p'nin tuttugu degiskeni set edecegim demek iken `void func(const int *p)` ben bu fonksiyonda p'nin tuttugu degiskeni sadece okuyacagim demektir.
 - `const int*` degerinin `int*` degerine typecast edilmesi yanlis iken `int*` degerinin `const int*` degerine donusturulmesi hat degildir.
-    ```
+
+    ```c
     int x = 10;
     const int* ptr = &x; //burada bir hata yok.
     ```
 
-    ```
+    ```c
     const int x = 10;
     int* ptr = &x; //burada bir hata olur. const olan x'i gosterdiginin const olmadigini soyleyen ptr ile gostermeye calistik.
     ```
+
 - Dizi ustunde islem yapan fonksiyonlar dizinin adresini ve boyutunu isterler. Bu cagriyi yapacak fonksiyon bu iki degeri geciyor olmalidir. `void printArray(const int* p, size_t size)`.
 - Dizinin belirli kismi yazdirilmak istenirse mesela 5. elemandan itibaren 3 elemena yazilmak istenen a dizisi icin `printArray(a+5, 3)` notasyonu kullanilir. `a+5` yerine `&a[5]` yazilabilir.
 - Bir ornek kod: ortalama alma fonksiyonu aldigi pointeri yine bir baska fonksiyon olan dizi toplama fonksiyonuna vermekte:
-    ```
+
+    ```c
     int sum_array(const int* p, int size)
     {
         int sum = 0;
@@ -423,14 +460,17 @@
 - Birden fazla geri donuse ihtiyaci olan fonksiyonun bunu yapmasi icin ilk metod call by reference'dir. `void get_array_max_min(const int* array, int size, int* max, int*min)` seklinde max ve min return edilmek yerine doldurulur.
 - Adres alan fonksiyonlar bu adreslerdeki degiskenleri baska fonksiyonlara verebilirler.
 - Bir fonksiyona bir arrayin iki elemaninin pointer uzerinden gecmek icin iki notasyon vardir.
-    ```
+
+    ```c
     swap(&p[k], &p[k+1]); 
     swap(p+k, p+k+1);
     ```
-- Pointer degiskeni fonksiyona parametre olarak vermenin bir yolu `int *p` iken diger yol `int p[]` dir. 
+
+- Pointer degiskeni fonksiyona parametre olarak vermenin bir yolu `int *p` iken diger yol `int p[]` dir.
 - `void sort(int p[], int size)`'deki konvensiyon p eger bir dizinin ilk elemani ise tercih edilir, bu bir zorunluluk degildir ancak her ikisi de kullanilabilmektedir. `p[]` yaygin degildir. **Unutulmamalidir ki bir fonksiyon bir diziyi parametre alamaz.** `p[]` ilk elemandir.
 - `*p++` p'nin gosterdigi nesneye eris, ardindan p'yi bir arttir. Array islemlerinde cokca kullanilir. En yaygin idiomlardan biridir.
-    ```
+
+    ```c
     #define SIZE 100
     void copy_array(int *pdest, const int *psource, int n)
     {
@@ -438,8 +478,10 @@
             *pdest++ = *psource++;     
     }    
     ```
+
 - Bir ornek kod: a dizisinin A indisli elemanindan baslayarak b dizisinin B indisli elemanindan baslayana yere N tane eleman kopyalayan fonksiyon:
-    ```
+
+    ```c
     void copy_partial_array(int *pdest, const int *psource, int n)    
     {
         while(n--)
@@ -454,7 +496,8 @@
         copy_partial_array(b+B, a+A, N); //1.method
         copy_partial_array(&b[B], &a[A], N); //2.method
     }    
-   ```
+   ```c
+
 - ++ ve -- operatorunun operandi bir dizi olamaz. Dizinin ismi burada kullanilamaz.
 - Bir ornek `++*p++` sagdan sola oncelik seviyesi ile okursak `(++(*(p++)))` demek yani dongude ise her elemanin degerini 1 artirarak ilerler.
 - `px == py` icin adreslerin ya ayni nesnenin adresi olmasi gerekiyor ya ayni dizinin bittigi yerin adresi olmasi gerekiyor ya da null pointer olmasi gerekiyor.
@@ -462,14 +505,17 @@
 - `px == py` x'i ve y'yi gosteren iki farkli adresi karsilastirirken `*px == *py` x'in ve y'nin tuttugu adreslerin icindeki degerleri karsilastirir.
 - Bir turu temsil eden alternatif bir turu - tur ismini olusturmak mumkundur. Buna **alias** takma isim denir.
 - **typedef** bir ture esisim olacak yeni bir tur ismi bildirimidir `int` yerine `tamsayi` gibi bir isim vermek gibidir. Derleyici artik tamsayi'yi taniyacaktir.
-    ```
+
+    ```c
     typedef int Word; // artik Word int yerine gececektir.
 
     Word x = 5; // bu sekilde tanimlama yapilabilir.
     Word func(int...); // return degeri Word yani int olan bir fonksiyon
     ```
+
 - `typedef int* IPTR` int* turu yerinie IPTR denebilir. `IPTR p = &x`. Scope'u belirlemek icin makrolar yerine kullanilir. Ayrica birden fazla pointeri tek satirda tanimlamak yine typedef ile mumkundur.
-    ```
+
+    ```c
     define IPTR int*
 
     typedef int* Iptr;
@@ -480,10 +526,11 @@
         Iptr p1, p2; //int *p1, *p2;
     }
     ```
+
 - typedef tanimlama yol haritasi
-    - hangi ture es isim verecekseniz o turden bir degisken tanimlayin. `int x;`
-    - tanimlamanin basina typedef anahtar sozcugunu yerlestirin. `typedef int x;`
-    - degiskene verdiginiz ismi o degiskenin turune vereceginiz es isimle degistiriniz. `typedef int Myint;`
+  - hangi ture es isim verecekseniz o turden bir degisken tanimlayin. `int x;`
+  - tanimlamanin basina typedef anahtar sozcugunu yerlestirin. `typedef int x;`
+  - degiskene verdiginiz ismi o degiskenin turune vereceginiz es isimle degistiriniz. `typedef int Myint;`
 - Dizi icin `typedef int INTA[10];` 10 elemanli bir dizinin typedef'idir. `INTA10 a, b, c;` icin `int a[10], b[10], c[10];`
 - typedef bildiriminin avantajlari
   - Karmasik bildirimleri okumasi daha kolay bir hale getirir.
@@ -511,7 +558,8 @@
 - `int *func(void)` seklinde tanimlanir. `int *xptr = func()` seklinde kullanilabilir. `return &x` gibi donebilir.
 - Bu sekilde pointerin hangi adresi tutacagini dogrudan vermek yerine fonksiyonun ciktisina gore belirleyebiliyoruz.
 - Otomatik omurlu degisken, bu kodun yurutulmesi surecinde hayatta olan ve kod blogu bitince sifirlanan kodlardir. Otomatik omurlu degiskenin adresini fonksiyon disina return eden pointer, invalid pointer olur.
-    ```
+
+    ```c
     int* foobar(void)
     {
         int sum = 0;
@@ -528,12 +576,14 @@
         int* ptr = foobar(); // foobar yerel bir degisken donmektedir. Haliyle bu degiskenin omru bittigi icin undefined behaviour.
     }
     ```
+
 - Ancak sum degiskeni `static int sum = 0` olarak tanimlansa idi bir undefined behaviour olmazdi, cunku static omurlu `sum` degiskeni program calistigi surece var olacakti. Haliyle global degiskenler, static anahtar sozcugu ile tanimlanan yerel degiskenler ve string literaller `"string literal"`
 - Adres donduren bir fonksiyon asla ve asla otomatik omurlu bir nesnenin adresini dondurmemelidir.
 - Bir fonksiyon static omurlu nesne adresi donduruyorsa fonksiyona yapilan her cagri ayni adresi donuyor olmali.
 - Fonksiyon kendisini cagiran koddan bir nesnenin adresini alir adresini aldigi nesnenin adresini dondurur.
 - Bir kod ornegi: Bir dizinin en buyuk elemaninin adresini donduren fonksiyon:
-    ```
+
+    ```c
     #define SIZE 20
     int* array_max(const int* pa, size_t size)
     {
@@ -607,7 +657,8 @@
 - Bazi geri donus degeri pointer olan fonksiyonlarin basarili olduklarinda donus degeri nesne adresi iken hata durumunda `NULL` doner. Mesela fopen() fonksiyonu basarili olursa *FILE donerken basarisiz olursa `NULL` doner. Bu basarisiz olan pointer return eden fonksiyonlar `NULL` donmesi durumu standart kutuphanelerde ve bizim yazacagimiz kutuphanelerde de cokca kullanilir.
 - Arama fonksiyonlari(search - find fonskiyonlari.) da arama sonucu olarak bulunan nesnenin adresini donmektedir, yani pointer doner. Eger aranilan deger bulunamazsa `NULL` pointer doner.
 - Bir kod ornegi: Bir int dizide bir deger arayan search_in_array isimli bir fonksiyon tanimlayin
-    ``` 
+
+    ```c
     int* search_in_array(const int* p, size_t size, const int val)
     {
         for (size_t i; i < size; i++)
@@ -620,15 +671,101 @@
         return NULL;
     }
     ```
+
 - Bizden nesne adresi eden fonksiyona null pointer gecmemeliyiz`void func(int* p)` Ancak bazi fonksiyonlar pointer parametresine null parametresini alabilir, bu fonksiyonlar null pointer icin de iceride opsiyonu olan fonksiyonlardir. Mesela fflush fonksiyonu null pointeri alirsa ayri bir is yapar null pointer gecmezsek ayri bir is yapar.
 - NULL pointeri ayrica flag gibi de kullanilabilir, bir pointer basta NULL tanimlanarak mesela if'te nesne adresi ataniyorsa buradan if'e girip girmedigi kontrol edilebilir.
 - Dinamik omurlu nesne adresi tutan bir pointerin, nesnesinin omru bittiginde `NULL` pointera atanir.
 - C dilinde yazilar char dizilerde tutuldugu icin `strlen`, `strspn`, `strpbrk` gibi fonksiyonlar char pointer `const char*` ya da `char *` parametresi alir.
 - C'de yazilar null terminated olarak tanimlanir. Haliyle stringin yani char dizisinin son elemani NULL oldugu icin diger arraylerde oldugu gibi boyutunun fonksiyona verilmesine gerek yoktur. for loopu `\0`(null karakter) ile karsilasinca duracak sekilde doner.
-    ```
+
+    ```c
     void print_str(const char* p){
        for(int i = 0; p[i] != '\0`; ++i){
         printf("%c", p[i]);
         }
     }
     ```
+
+## 33 Pointer - Standart Kutuphane String Fonksiyonlari
+
+- `putchar` aldigi karakteri standart output device'a basar.
+- `sgets` fonksiyonu icindeki stringe standart inputtan alinan yaziyi yazar.
+- NULL karakter `'/0'` 0 sayisina tekabul etmektedir. Bir stringin sonunda olan bu karaktere karar diziyi donmek icin `(while *p != '\0')` gibi yapilar kullanilabilir.
+- Bir fonksiyon aldigi adresteki diziye veya bu dizideki yaziya yazacagi, buradaki yaziyi yazip degistirecek ise. yani `const` ile verilmemis bir pointer ile cagirilan bir fonksiyonun diziyi tasma riski vardir.
+- Burada cagiran fonksiyonun bu durumu takip ediyor olmasi gerekir, bu sorumlulugu fonksiyonu cagiran kod bloguna birakir.(std. kutuphaneler boyledir.)
+- Diger secenek ise diziyi verirken boyutunu da fonksiyona vermektir.
+- strlen: `size_t strlen(const char *p)` strlen cagrisina verdigimiz dizi size_t turunden bir degiskende tutulmalidir.
+- Bir kod ornegi strlen: Alinan stringi tersten yazdiran fonksiyon, `revprint`
+
+    ```c
+    void revprint(const char* p){
+        for (int i = (int)(strlen(p) -1); i >= 0; --i){
+            putchar(p[i]);
+        }
+    }
+    ```
+
+- `strchr` dizideki aranacak karakteri ilk buldugunda bu elemanin adresini dondurur `char* strchr(const char *p, int ch)`.
+- `strrchr` dizideki aranacak karakteri son buldugunda bu elemanin adresini dondurur `char* strrchr(const char *p, int ch)`.
+- str structindaki p pointerinda tutulan karakterin indisini `p - str` isleminin ciktisi olan tamsayi verir.
+- Elimizde bir yaziyi gosteren bir pointer degisken var, bu pointer degiskenin degerini yazinin sonundaki null karakter ile degistirmemiz gerektigini dusunelim. Bunu yapmaya yonelik bir cok farkli kodlar vardir.
+
+    ```c
+    while(*p != '\0')
+        ++p;
+    ```
+
+    ```c
+    while(*p)
+        ++p;
+    ```
+
+    ```c
+    while(*p++)
+        ;
+    --p;
+    ```
+
+    ```c
+    p += strlen(p);
+    ```
+
+    ```c
+    p = strchr(p, '\0');
+    ```
+
+- `NULL pointer` ile `null character` karistirilmamalidir.
+- `NULL` bir makrodur ve adres sabitidir, pointerlara atanmalidir. Pointeri degeri hicbir nesnenin adresi olmayan bir adrese ceker.
+- `null character` = '/0' bir tamsayi sabitidir, ya int ya da char turden bir degiskene atanabilir. Bu bir degiskendir, dizinin sonunda olmasi dizinin sonlandirilmasi anlamindadir.
+- Bir C idiomu `NULL` poiter ile `null` karakteri ayni ifade icinde kullaniyor, eger ptr yaziyi gosteriyor ve ptr'nin gosterdigi yazi bos degil ise ifadesi:`if (ptr != NULL && *ptr != '\0')` burada `short circuit` davranisindan faydalanilir. Bu sekilde `NULL` pointeri derefence etmemis oluyoruz. Bu ifadeyle `if(ptr && *ptr)` ayni ifadedir.
+- Bir diziye bir yazi `struct name = "name"` seklinde yapamayiz onun yerine strcpy ile yapilir.
+- Standart kutuphanede fonksiyonlar her zaman hedef adres kaynak adresten once alinir.
+- `strcpy` boyut almadigi icin kullanirken dikkat etmek gerekir tasma olup olmadigi developerin sorumlulugundadir.
+- `while(*pdest++ = *psource++)` null karaktere kadar kopyalamayi yapar.
+- strcpy fonksiyonunun kesisen bloklar(overlapped) uzerinde calismasi tanismizdir. `strcpy(str+2, str)` ile ali alali yapmaya calismak gibi durumlar burada kast edilmektedir. Bunun icin `memmove` gibi bir fonksiyon kullanilabilir.
+- `strcat` bir yazinin sonunda bir yazi eklemek icin kullanilir.
+
+## 34 Pointer - Standart Kutuphane String Fonksiyonlari 2
+
+- `strcmp` buyuk olan degere sahip olani buyuk doner. `lexicographical` compare denir buna. Burada gelen ilk karsilikli ogenin hangisi buyukse o buyuk olur. Boyuta karsilikli ogelerin hepsinin ayni oldugu durumda bakilir. Sozlukteki gibi karsilastirilir.
+**- 0.30'da kaldim.**
+
+## 35 Pointer -String Literals - Pointer Dizileri
+
+- C'de string literal const degildir ancak Cpp'da const'tur. Her iki dilde de const gibi ele alinir. Static omurlu degiskenlerdir.
+- **atladim.**
+- **36nin ilk 5 dksini izlemedim. bu konuyla ilgilidir.**
+
+## 36 Pointer to Pointer - Gosterici Gosteren Gostericiler
+
+- Pointerin kendi adresinin tutuldugu pointerlardir.
+- Bir ifade bir `T` turunden bir nesnenin adresini gosteriyorsa turu `T*`dir. Bu durumda `T*`'i tutan pointerin turu de `T**` olacaktir.
+- `**p` ile gosterilir, bunu `*(*p)` gibi dusunebiliriz.
+
+    ```c
+    int x = 23;
+    int* p = &x;
+    int** q = &p; //int * turundeki p pointerinin adresini tutan int** turunden degisken. &p'nin turu int**dir.
+    ```
+
+- **40. dakikada kaldim**
