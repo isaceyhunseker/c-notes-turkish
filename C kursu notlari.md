@@ -496,7 +496,7 @@
         copy_partial_array(b+B, a+A, N); //1.method
         copy_partial_array(&b[B], &a[A], N); //2.method
     }    
-   ```c
+   ```
 
 - ++ ve -- operatorunun operandi bir dizi olamaz. Dizinin ismi burada kullanilamaz.
 - Bir ornek `++*p++` sagdan sola oncelik seviyesi ile okursak `(++(*(p++)))` demek yani dongude ise her elemanin degerini 1 artirarak ilerler.
@@ -768,4 +768,74 @@
     int** q = &p; //int * turundeki p pointerinin adresini tutan int** turunden degisken. &p'nin turu int**dir.
     ```
 
-- **40. dakikada kaldim**
+- ****ptr'ye kadar kullanilabilir.
+- swap ornegi, swap yapan fonksiyonun int* turunden degiskenlerin adreslerini aldigi duruma ornek olacaktir.
+
+    ```c
+    void pswap(int** ptr1, int** ptr2)// takes address of pointer
+    {
+        int* ptemp = *ptr1;
+        *ptr1 = *ptr2;
+        *ptr2 = ptemp;
+    }
+
+    int main
+    {
+        int x = 10;
+        int y = 20;
+        int* p1 = &x;
+        int* p2 = &y;
+
+        pswqp(&p1,&p2); // x ve y'nin degerleri degismez onlari gosteren gostericiler degisir.
+        pswap(p1,p2); //x ve y'nin degerleri degisir.
+    }
+    ```
+
+- Daha karmasik bir senaryo incelemek gerekirse: Bir dizinin hem en buyuk elemanin hem de en kucuk elemanin adresinin hesaplayan fonksiyon.
+
+    ```c
+    void get_min_max(const int* pa, size_t size, int** ptr_min, int** ptr_max)
+    {
+        *ptr_min = *ptr_max = (int *)pa;
+
+        for (size_t i = 1; i < size; ++i){
+            if(pa[i] > **ptr_max)
+                *ptr_max = (int *)pa[i];
+            else if(pa[i] < **ptr_min)
+                *ptr_min = (int *)pa[i];
+        }
+
+    }
+    int main()
+    {
+        int a[SIZE];
+        //
+        randomize();
+        set_array_random(a, SIZE);
+        print_array(a, SIZE);
+
+        int* pmin, *pmax;
+        get_min_max(a,SIZE, &pmin, &pmax);
+        swap(pmin,pmax);// changed vaules of variables
+    }
+    ```
+
+- Pointer to Pointer boyutu pointer ile aynidir.
+- Pointer to Pointer'a da NULL ilk atama yapilabilir.
+- Bu adresler bir dizi de olabilirdi:
+    
+    ```c
+    void foo(int** pa, size_t size);
+
+    int a = 12, b = 23, c = 34, d = 56;
+    
+    int main()
+    {
+        int* pa[] = {&a, &b, &c, &d};//pointer array.
+        foo(pa, asize(pa));
+    }
+    ```
+
+- Derleyici acisindan `void func(int *p, int size)` ile `void func(int p[], int size)` arasinda fark yoktur. Ikiside bir pointeri gosterir. Dogal olarak `void func(int **p, int size)` ile `void func(int *p[], int size)` aynidir. Ancak `*p[]` dizinin ilk elemanini gosteren pointerlar icin tercih edilir genelikle.
+
+- *1.35te kaldim*
