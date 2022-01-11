@@ -756,8 +756,9 @@
 - **atladim.**
 - **36nin ilk 5 dksini izlemedim. bu konuyla ilgilidir.**
 
-## 36 Pointer to Pointer - Gosterici Gosteren Gostericiler
+## 36 Pointer to Pointer - Pointer to Pointer & `const` Keyword - `void` Giris
 
+- Pointer to Pointer, gosterici gosteren gostericiler demektir.
 - Pointerin kendi adresinin tutuldugu pointerlardir.
 - Bir ifade bir `T` turunden bir nesnenin adresini gosteriyorsa turu `T*`dir. Bu durumda `T*`'i tutan pointerin turu de `T**` olacaktir.
 - `**p` ile gosterilir, bunu `*(*p)` gibi dusunebiliriz.
@@ -804,8 +805,8 @@
             else if(pa[i] < **ptr_min)
                 *ptr_min = (int *)pa[i];
         }
-
     }
+
     int main()
     {
         int a[SIZE];
@@ -823,7 +824,7 @@
 - Pointer to Pointer boyutu pointer ile aynidir.
 - Pointer to Pointer'a da NULL ilk atama yapilabilir.
 - Bu adresler bir dizi de olabilirdi:
-    
+
     ```c
     void foo(int** pa, size_t size);
 
@@ -837,5 +838,87 @@
     ```
 
 - Derleyici acisindan `void func(int *p, int size)` ile `void func(int p[], int size)` arasinda fark yoktur. Ikiside bir pointeri gosterir. Dogal olarak `void func(int **p, int size)` ile `void func(int *p[], int size)` aynidir. Ancak `*p[]` dizinin ilk elemanini gosteren pointerlar icin tercih edilir genelikle.
+- `**p` pointeri dereference yapip tekrar deference etmek `double derefencing` veya `double indirection` denir.
+- [*ptr](5) ile *ptr[5] farkli anlamlara geliyor [*ptr](5); ptr'nin gosterdigi gostericinin besinci elemanini dereference eder.
+- `int *const p = &x` durumumda p'nin degeri degistirilirse sentaks hatasi verilir. const pointer to int.
+- `int const *p = &x` durumunda p'yi gosteren pointerin degeri degistirilirse sentaks hatasi verir. pointer to const int.
+- `*` ne'den once gelirse const olan odur.
+- `int** const ptr = &q` icin `ptr = &q` hata verir.
+- `int* const *ptr = &q` icin `*ptr = &q` hata verir.
+- `int const **ptr = &q` icin `**ptr = &q` hata verir.
+- Dogal olarak const anahtar sozcugunun ve *'larin yerlesimi tamamen lojik tasarima baglidir.
+- const anahatr sozcugu birden fazla da kullanilabilir, mesela: `int const * const * const ptr` yukaridaki uc durumun da degistirilemez oldugu anlamina gelen gecerli bir ifadedir.
+- Salt okuma amacli kullanimlarda fonksiyon prototiplerinde yazmayi unutmamak gerekir.
+- void pointers. `char *strncpy(char *pdest, const char *psource, size_t n)` buradaki aradaki `n` n karakterin uzerinden islem yapilmasini saglar. strcpy'den farki budur. Ayni durum `strcat, strncat` ve `strcmp, strncmp` icin de gecerlidir.
+- strncpy sona null karakteri koymasi icin n parametresinin yazinin boyutundan buyuk olmasi gerekiyor. Eger yazi daha kucukse null karakterin manuel olarak son elemana set edilmesi gerekmektedir.
+- `strncpy(dest, source, 3)[3] = '\0';` kopyalamayi ilk 3 elemanda yapip 3 indisli elemana null karakteri ekler.
+- Yazidan kucuk elemani kopyalamada otomatik olarak NULL karakterinin eklenmemesi soyle kullanilabilir: 012uga6789 yaratimi ornegi:
 
-- *1.35te kaldim*
+    ```c
+    char source[100] = "tugay";
+    char dest[100] = "012345678";
+    //012uga6789
+
+    printf("(%s)\n", dest);
+    strncpy(dest + 3, source + 1, 3);
+    printf("(%s)\n", dest);// burada uga'yi 345 yerine koydu.
+    ```
+
+- `void` de bir turdur ancak bazi kisitlamalari vardir:
+  - Bir nesnenin turu `void` olamaz.
+  - Dizinin elemanlarinin turu de `void` olamaz dogal olarak.
+- Bir ifadenin turu `void` olabilir. Bu durum iki farkli sekilde karsimiza cikar:
+  - Geri donus degeri olmaya fonkisyonun donus degeri yerine yazilir, bu fonksiyonlara `void function` denir.
+  - Bir ifade void turune cast edilebilir. Tur donusturme operatorunun (`typecast`) hedef turu `void` olabilir: `(void) (x + 5)` gibi. Bu durum geri donus degeri olmasina karsin bu degerin istenmedigi - discard edildigi durumlarda kullanilir. Bu durumda bu geri deger donmemeyi bilerek yaptigimizi gostermek icin bu gosterimi kullaniriz. Fonksiyonu cagirdim ama geri donus degerini kullanmak istemiyorsam - `(void)getchar();` gibi burada `getchar` normalde `int` donecektir ancak bu sekilde onu kullanmayacagimizi gostermis olduk.
+
+## 37 Void Pointers
+
+- `int func(void);` func fonksiyonu parametre almiyor demek iken `int func()` fonksiyonun parametreleri hakkinda bilgi verilmedigi anlamina gelir.
+- `void*` turu bir pointer/adres turudur. `void` ile karistirilmamalidir.
+- `void* vptr` icin `vptr` herhangi turden bir nesnenin adresini tutabilir. Asagidaki atamalar gecerlidir:
+
+    ```c
+    int x = 10;
+    double dval = 2.31;
+    char str[] = "oguz";
+
+    void* vptr = &x;
+    vptr = &dval;
+    vptr = &str;
+    ```
+
+- void pointer'da dereferencing islemi gecersizdir `*vptr = 20;` veya `vptr[2]` gibi.
+- `vptr + 5` gibi pointer aritmetigi de calismaz.
+- void pointerla yapilabilecek islemler:
+  - ilk deger veya atama yoluyla ilk deger atanabilir: `vptr = &x;` Tam sayi gercek sayi atanamaz.
+  - NULL pointer degeri atanabilir `vptr = NULL;` veya `vptr = 0;` gibi.
+  - `vptr == str` seklinde adres kontrollerinde kullanilabilir.
+- `T` herhangi bir tur olmak uzere: C dilinde `T*` turunden `void*` turune ve void turunden `T*` turune otomatik donusumu vardir. Bu donusumler otomatik(implicit) oldugu halde `int* iptr = (void*)vptr` gibi explicit olarak da yapilabilir.
+- `Generic programlama` Turden bagimsiz programlama demektir. `void*` burada cogunlukla kullanilir.
+- Ture bagli olmayan fonksiyonlar yaratmak onlarla calismak icin generic programlamadan yararlanilir.
+- Ornek vermek gerekirse: herhangi turden iki degiskenin takas edilebilmesi icin bir fonksiyon yazma:
+
+    ```c
+    void gswap(void * vp1, void * vp2, size_t n) //generic swap
+    {
+        char *p1 = vp1; //char because it has 1 byte magnitude
+        char *p2 = vp2; //char because it has 1 byte magnitude We will swap byte one byte right now.
+
+        while(n--)
+        {   
+            char temp = *p1;
+            *p1++ = *p2;
+            *p2++ = *temp;
+        }
+    } 
+
+    int x = 56443;
+    int y = 34566;
+
+    double d1 = 32.553;
+    double d2 = 33.123;
+
+    gswap(&x, &y, sizeof(int)); //sizeof used for determining type of variables from their sizes. 
+    gswap(&d1, &d2, sizeof(double));
+    ```
+- *54.dakikada kaldim.*
