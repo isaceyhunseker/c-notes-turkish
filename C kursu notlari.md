@@ -871,7 +871,7 @@
   - Geri donus degeri olmaya fonkisyonun donus degeri yerine yazilir, bu fonksiyonlara `void function` denir.
   - Bir ifade void turune cast edilebilir. Tur donusturme operatorunun (`typecast`) hedef turu `void` olabilir: `(void) (x + 5)` gibi. Bu durum geri donus degeri olmasina karsin bu degerin istenmedigi - discard edildigi durumlarda kullanilir. Bu durumda bu geri deger donmemeyi bilerek yaptigimizi gostermek icin bu gosterimi kullaniriz. Fonksiyonu cagirdim ama geri donus degerini kullanmak istemiyorsam - `(void)getchar();` gibi burada `getchar` normalde `int` donecektir ancak bu sekilde onu kullanmayacagimizi gostermis olduk.
 
-## 37 Void Pointers
+## 37 Void Pointers - Memory Uzerinde Islem Yapan Fonksiyonlar
 
 - `int func(void);` func fonksiyonu parametre almiyor demek iken `int func()` fonksiyonun parametreleri hakkinda bilgi verilmedigi anlamina gelir.
 - `void*` turu bir pointer/adres turudur. `void` ile karistirilmamalidir.
@@ -921,4 +921,30 @@
     gswap(&x, &y, sizeof(int)); //sizeof used for determining type of variables from their sizes. 
     gswap(&d1, &d2, sizeof(double));
     ```
-- *54.dakikada kaldim.*
+
+- Fonksiyonlarin icine gonderilen adresin, bir diziye mi ait oldugu veya ait ise o dizinin boyutu hakkinda fikir vermesinin olasiligi yoktur.
+- a(int) dizisinin ilk 4 elemani ile b(int) dizisinin son 4 elemanini takas etmek icin soyle bir fonksiyon cagirilabilir:
+
+    ```c
+    gswap(a, b + SIZE - 4, 4* sizeof(int));
+    ```
+
+- `string.h`'daki fonksiyonlar sadece stringler uzerinde calismaz, bellek bloklari uzerinde islemler yaparlar.
+- `memset`, `memcpy`, `memmove`, `memchr` ve `memcmp` bu fonksiyonlardir.
+- `memset` bellek blogunu bir tamsayi ile doldurur.
+- `void *memset(void *vp, int val, size_t size);` icin `vp` bellek blogunun baslangic adresi, `val` doldurulacak deger, size ne kadar bellek alaninin(kac tane byte) doldurulacaginin boyutunu verir.
+- Bellekte size ile calisirken genel pratik `eleman sayisi * sizeof(elemanin_turu)` olmali, 10 elemanli bir `int` dizi icin `10 * sizeof(int)` olmali.
+- `void*` ile const void* icin diger turlerdeki durum gecerlidir. Salt okuma icin kullanilacak degiskenler fonksiyona `const void*` ile alinir.
+- `memcpy` generic bir kopyalama islemini yapan fonksiyondur. Bir bellek blogunu bir yerden baska bir yere kopyalamak icin `memcpy` fonksiyonunu cagirabiliriz.
+- `void *memcpy(void *vpdest, void *vpsource, size_t n);` n tane byte kopyalar.
+- Turden bagimsiz atama operatoru gibi dusunulebilir.
+- Elimizde iki bellek blogu varsa biri okuma biri yazma icinse, ve okuma icin olan yazma icin olanla cakisiyorsa buna `overlapped blocks` denir.
+- `memcpy` fonksiyonu `strcpy` gibi `overlapped block`larda tanimsiz davranis olusturabilir, boyle bir durumda kullanilmamalidir.
+- Boyle durumlari belirtmek icin fonksiyon overlapped olmayan degiskenler almasi gerektigini belirtmek gerekir. `restrict` anahtar sozcugu ile tanimlanir, `restrict` degiskenler overlapped etmeyen bellek bloklarini almak zorundadirlar.
+- Bir dizinin elemanlarini 10 tane yana kaydirmak `overlapped block` durumuna ornek olabilir.
+- `overlapped block` olan durumlarda kullanilmasi gereken fonksiyon `memmove`dur.
+- `memchr` bir bellek blogunda belirli bir tamsayi degerine sahip bir byte arar.
+- `void *memchr (void * ptr, int value, size_t n);` prototipine sahiptir, value degerini ptr adresinden itibare n byte icinde arar.
+- `memcmp` turden bagimsiz iki bellek blogunu karsilatiran ve karsilastirma sonucunu donen fonksiyodur.
+- `int memcmp ( const void * ptr1, const void * ptr2, size_t num );` prototipine sahiptir.
+- Karsilatirmalar isaretsiz olarak yapilir.
