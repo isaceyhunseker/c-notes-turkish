@@ -1,5 +1,7 @@
 # C Kursu Notlari
 
+[[_TOC_]]
+
 ## 1 Programlamaya Giris - C Dilinin Diger Diller ile Karsilastirilmasi
 
 ## 2 C Standartlari - Derleme Surecleri - Diagnostic Mesajlari
