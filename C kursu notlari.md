@@ -950,3 +950,20 @@
 - `memcmp` turden bagimsiz iki bellek blogunu karsilatiran ve karsilastirma sonucunu donen fonksiyodur.
 - `int memcmp ( const void * ptr1, const void * ptr2, size_t num );` prototipine sahiptir.
 - Karsilatirmalar isaretsiz olarak yapilir.
+
+## 38 Void Pointers 2
+
+- `void pointer` temelde generic fonksiyonlar tasariminda kullanilir, generic fonksiyon turden bagimsiz fonksiyon demektir.
+- Turden bagimsiz olarak bir diziyi reverse edecek fonksiyon buna ornek olabilir: `void * greverse(void* vpa, size_t* size, size_t sz)` `vpa` ilk elemanin adresi ve `size` dizinin boyutu iken `sz` bir ogenin boyutunu tutar.
+- Buradaki ornekte dikkat edilmesi gereken onemli bir nuans vardir: `gswap` fonksiyonuna elemanlar boyutlarini belli edecek sekilde verilmelidir, bu sekilde farkli boyutlarda calisabilmesi mumkun olacaktir:
+
+    ```c
+    void * greverse(void* vpa, size_t* size, size_t sz)
+    {
+        char* p = (char*)vpa;
+        
+        for(size_t i = 0; i < size / 2; ++i) {
+            gswap(p + i * sz, p + (size - 1 - i) * sz, sz); //step size is i * sz for this swap operation. 
+    ```
+
+- 24.dk kaldim
