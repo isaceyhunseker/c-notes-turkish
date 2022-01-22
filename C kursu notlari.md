@@ -967,8 +967,39 @@
 - `memcmp`ile turden bagimsiz siralama fonksiyonu yazmak mumkun degildir, cunku bizim bellek karsilastirma fonkisyonumuz, byte byte calisir. Sadece esitligi kontrol edebiliriz bu sebeple buyuk kucuk karsilastirip siralayamayiz.
 - Turden bagimsiz dizilerde siralama icin standart kutuphanedeki `qsort` fonksiyonu kullanilabilir.
 - `void **` turu generic bir pointer turu degildir. `void **` turu sadece `void *` turden bir nesne adresi anlamina gelen ifadenin turunu tutabilir.
-- **Callback mekanizmasi:** Bir fonksiyona baska bir fonksiyonu arguman olarak gondermektir.
-- `C`,`Cpp` ve `java` gibi dillerde bir fonksiyona arguman olarak bir f =onksiyon gonderilebilir.
+- **Callback mekanizmasi:** Bir fonksiyona baska bir fonksiyonu arguman olarak gondermektir: **Function Pointers**
+- `C`,`Cpp` ve `java` gibi dillerde bir fonksiyona arguman olarak bir fonksiyon gonderilebilir.
 - Soyle somutlastirilabilir: a fonksiyonu b fonksiyonunu cagiriyor ve b'ye c fonksiyonunu arguman olarak veriyor.
 - *Call-back: I sent you a function and you will call it back* olarak da aciklanabilir.
 - Bu callback yapisi adres semantigiyle yani fonksiyon pointerlari gerceklenir.
+- Bir fonksiyon adresinin turu geri donus degerinin ve parametrelerinin turu ile birlikte belirlenir.
+- Dogal olarak `int foo(in t)`, `int bar(double)` ve `int baz(void)` fonksiyonlarinin adreslerinin turleri farklidir.
+- `int toupper(int)` ve `int isalpha(int)` ayni turden fonksiyon adres turune sahiptir.
+- `int foo(int)` turunden bir fonksiyonun adresinin turu: `int(*)(int)` seklinde gosteririlir. Bu notasyon `donus turu(*(*)(argumanlarin turleri)` seklinde gosterilir.
+- Geri donus degeri `int` olan iki stringi karsilastiran `strcmp` fonksiyonun adresinin turu `int(*)(const char* const char*)` olur.
+- Fonksiyonun adresini elde etmenin ilk yolu `&` islevini kullanmaktir: `&foo`, `&strlen` gibi.
+- Diger yol ise `function to pointer` conversion'dur. Bu donusum `array decay/array to pointer` conversion'a benze yani dizinin ilk elemanin adres olarak kullanilmasi metodu `&a[0] = a` esitligidir.
+- `function to pointer` conversion'u bir fonksiyonun isminin bir ifade icinde kullanildiginda derleyici fonksiyon ismini fonksiyonun adresine donusturur.
+- `int foo(double);` icin: asagidaki ikinci ifade`foo` de birincisi gibi`&foo` adrese donusturulerek kullanilir.
+
+    ```c
+    int foo(double);
+    
+    int main()
+    {
+        int (*fptr)(double);//foo's function pointer type.
+        &foo
+        foo
+
+        fptr = &foo; //valid
+        fptr = foo; //valid
+
+    }
+    ```
+
+- `int (*fptr)(double)` gostericisi ile `int func(int)` fonksiyonun adresini tutmaya calismak: `fptr = &func` C'de yanlis C++'da sentaks hatasidir.
+- Bir fonksiyon pointeri, global yerel yada statik/otomatik omurlu olabilir. 
+- Fonksiyonlarin parametreleri ve geri donus degerleri funtion pointer olabilir.
+- Sistemde butun nesne gostericilerin boyutu nasil ayniysa, butun fonksiyon gostericilerinin de boyutu birbiriyle aynidir. Ancak nesne gostericisi ile fonksiyon gostericisinin boyutu ayni olmak zorunda degildir.
+- Fonksiyon cagirma operatoru `function call pointer`  
+- 1.26da kaldim
