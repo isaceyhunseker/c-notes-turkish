@@ -949,7 +949,7 @@
 - `int memcmp ( const void * ptr1, const void * ptr2, size_t num );` prototipine sahiptir.
 - Karsilatirmalar isaretsiz olarak yapilir.
 
-## 38 Void Pointers 2 - Callback Mekanizmasi Giris
+## 38 Void Pointers 2 - Fonksiyon Pointer'lari(Callback) - Generic Fonksiyonlara Giris(`qsort`)
 
 - `void pointer` temelde generic fonksiyonlar tasariminda kullanilir, generic fonksiyon turden bagimsiz fonksiyon demektir.
 - Turden bagimsiz olarak bir diziyi reverse edecek fonksiyon buna ornek olabilir: `void * greverse(void* vpa, size_t* size, size_t sz)` `vpa` ilk elemanin adresi ve `size` dizinin boyutu iken `sz` bir ogenin boyutunu tutar.
@@ -1001,5 +1001,70 @@
 - Bir fonksiyon pointeri, global yerel yada statik/otomatik omurlu olabilir. 
 - Fonksiyonlarin parametreleri ve geri donus degerleri funtion pointer olabilir.
 - Sistemde butun nesne gostericilerin boyutu nasil ayniysa, butun fonksiyon gostericilerinin de boyutu birbiriyle aynidir. Ancak nesne gostericisi ile fonksiyon gostericisinin boyutu ayni olmak zorunda degildir.
-- Fonksiyon cagirma operatoru `function call pointer`  
-- 1.26da kaldim
+- Fonksiyon cagirma operatoru `function call operator = ()` fonksiyonun ismiyle kullanildigi gibi ile de kullanilabilir. `func()` olarak cagirilan fonksiyon `(&func)()` yazildiginda da cagirilir. Oyleyse `func` fonksiyonunun adresini bir fonksiyon pointerina atayip onla da cagirabilirdik. 
+
+    ```c
+    void func(void);
+
+    int main ()
+    {
+        void(*fp)(void) = &func; //fp points func now. 
+        fp();//calls the func
+    }
+    ```
+
+- Fonksiyon cagrisinin fonksiyon gostericisi uzerinden yapilmasi cok sik kullanilan bir metoddur.  
+- Fonksiyon pointeri en son hangi fonksiyonun adresini almissa, fonksiyon pointeri ile o fonksiyon cagirilir.
+- Haliyle fonksiyon pointer'i ismine bakarak hangi fonksiyonun cagirilacagi runtime'da belli olur.
+- `void func(int (*)(int))`: `func` fonksiyonun parametresi geri donus degeri ve aldigi arguman `int` olan bir fonksiyon gostericisidir:
+
+    ```c
+    int square(int a)
+    {
+        return a * a;
+    }  
+
+    int multiply_2(int a)
+    {
+        return a * 2;
+    }  
+
+    void func(int (*fp)(int))
+    {
+        int result = fp(20);// equals to `square(20)` or `multiply_2(20)` funcs return vals. 
+    }
+
+    int main()
+    {
+        func(&square);//pass square func as an function argument
+        func(square); //pass square func as an function argument too
+        func(multiply_2) // pass multiply_2 func as an function argument
+    }
+    ```
+
+- Yukaridaki ornekte `func` fonksiyonunun hangi ciktiyi uretecegi tamamen onun cagirildigi yerde kendisine verilen argumana baglidir, `square` argumanini alir ise 400 `multiply_2` argumanini alir ise 40 doner, haliyle algoritmayi `func` fonksiyonu degil onu cagiranlar belirler. Fonksiyon hangi algoritmayi implemente edecegine karar veremez, sadece ona verileni implemente eder. Bu mekanizma siklikla kullanilir.
+- Fonksiyon bildirimleri cogunlukla `typedef` bildirimleri ile fonksiyon adresi turlerine verilen es isimlerle kullanilir. Bunun sebebi aksi turlu cok karmasik bildirimlerin gerekmesi. Gorsel karmasiklik artar hata yapma  riski yukselir.
+
+    ```c
+    typedef int (*FPTR)(const char*,const char*); 
+    void *bar(int (*fpx)(const char*,const char*),int (*fpy)(const char*,const char*)); //without typedef
+    void bar(FPTR fpx, FPTR fpy); //with typedef
+    ```
+
+- Sonuc olarak genellikle function pointer'lar typedef(es isim) ile kullanilmalidir.
+- Fonksiyonlar function pointer ile cagirilirken `*` kullanilmasi sart degildir `*fp() = fp()` ancak `*fp()` ile cagirmak `fp` isminin fonksiyon ismi degil adres ismi oldugunu vurgulamak icin kullanildigini gosterir. 
+- Yukaridaki duruma uygun sekilde bir function pointer ile fonksiyonu cagirirken operatorlerin oncelik tablosu dikkate alinmalidir. Sozgelimi fonksiyon cagirma operatoru `()` icerik operatorunden `*` oncelikli oldugu icin icerik operatoru ile cagirilan fonksiyon `*fp()` seklinde degil `(*fp)()` seklinde cagirilmalidir.
+- Fonksiyon pointerlarinin en sik kullanildigi yerlerden birisi generic fonksiyonlardir - turden bagimsiz fonksiyonlar
+- `qsort` bu fonksiyonlara ornek ve en sik kullanilanlardan biridir. Turden bagimsiz olarak bir diziyi siralar.
+- `qsort`'un tanimi soyledir:
+
+    ```c
+    void qsort(void *vpa, // adress of array that will be sorted
+            size_t size, // size of array         
+            size_t sz, // size of element type of array    
+            int(*fp)(const void *, const void *) //used to compare two of elements of array - has sa me convention with strcmp
+                )
+    ```
+
+- Dorduncu parametre olan fonksiyonu biz yaziyoruz, yani `qsort` generic ancak kullandigi compare foksiyonu customdir.
+- Haliyle dizinin turune gore bir compare fonksiyonu yazilir bu fonksiyon `qsort`'a verilmelidir. Fonksiyonun prototipi void * eleman alsa da iceride ilgili typecast islemi yapilmalidir
