@@ -1,4 +1,6 @@
-# C Kursu Notlari
+# C Notlari
+
+BETTER LATE THAN NEVER
 
 ## 1 Programlamaya Giris - C Dilinin Diger Diller ile Karsilastirilmasi
 
@@ -998,10 +1000,10 @@
     ```
 
 - `int (*fptr)(double)` gostericisi ile `int func(int)` fonksiyonun adresini tutmaya calismak: `fptr = &func` C'de yanlis C++'da sentaks hatasidir.
-- Bir fonksiyon pointeri, global yerel yada statik/otomatik omurlu olabilir. 
+- Bir fonksiyon pointeri, global yerel yada statik/otomatik omurlu olabilir.
 - Fonksiyonlarin parametreleri ve geri donus degerleri funtion pointer olabilir.
 - Sistemde butun nesne gostericilerin boyutu nasil ayniysa, butun fonksiyon gostericilerinin de boyutu birbiriyle aynidir. Ancak nesne gostericisi ile fonksiyon gostericisinin boyutu ayni olmak zorunda degildir.
-- Fonksiyon cagirma operatoru `function call operator = ()` fonksiyonun ismiyle kullanildigi gibi ile de kullanilabilir. `func()` olarak cagirilan fonksiyon `(&func)()` yazildiginda da cagirilir. Oyleyse `func` fonksiyonunun adresini bir fonksiyon pointerina atayip onla da cagirabilirdik. 
+- Fonksiyon cagirma operatoru `function call operator = ()` fonksiyonun ismiyle kullanildigi gibi ile de kullanilabilir. `func()` olarak cagirilan fonksiyon `(&func)()` yazildiginda da cagirilir. Oyleyse `func` fonksiyonunun adresini bir fonksiyon pointerina atayip onla da cagirabilirdik.
 
     ```c
     void func(void);
@@ -1047,12 +1049,12 @@
 
     ```c
     typedef int (*FPTR)(const char*,const char*); 
-    void *bar(int (*fpx)(const char*,const char*),int (*fpy)(const char*,const char*)); //without typedef
+    void *bar(int (*fpx)(const char*,const char*),int (* fpy)(const char*,const char*)); //without typedef
     void bar(FPTR fpx, FPTR fpy); //with typedef
     ```
 
 - Sonuc olarak genellikle function pointer'lar typedef(es isim) ile kullanilmalidir.
-- Fonksiyonlar function pointer ile cagirilirken `*` kullanilmasi sart degildir `*fp() = fp()` ancak `*fp()` ile cagirmak `fp` isminin fonksiyon ismi degil adres ismi oldugunu vurgulamak icin kullanildigini gosterir. 
+- Fonksiyonlar function pointer ile cagirilirken `*` kullanilmasi sart degildir `*fp() = fp()` ancak `*fp()` ile cagirmak `fp` isminin fonksiyon ismi degil adres ismi oldugunu vurgulamak icin kullanildigini gosterir.
 - Yukaridaki duruma uygun sekilde bir function pointer ile fonksiyonu cagirirken operatorlerin oncelik tablosu dikkate alinmalidir. Sozgelimi fonksiyon cagirma operatoru `()` icerik operatorunden `*` oncelikli oldugu icin icerik operatoru ile cagirilan fonksiyon `*fp()` seklinde degil `(*fp)()` seklinde cagirilmalidir.
 - Fonksiyon pointerlarinin en sik kullanildigi yerlerden birisi generic fonksiyonlardir - turden bagimsiz fonksiyonlar
 - `qsort` bu fonksiyonlara ornek ve en sik kullanilanlardan biridir. Turden bagimsiz olarak bir diziyi siralar.
@@ -1068,3 +1070,14 @@
 
 - Dorduncu parametre olan fonksiyonu biz yaziyoruz, yani `qsort` generic ancak kullandigi compare foksiyonu customdir.
 - Haliyle dizinin turune gore bir compare fonksiyonu yazilir bu fonksiyon `qsort`'a verilmelidir. Fonksiyonun prototipi void * eleman alsa da iceride ilgili typecast islemi yapilmalidir
+
+## 39 Fonksiyon Pointer'lari(Callback) - 2
+
+- Fonksiyonu cagiran fonksiyonlara `client` denir.
+- Callback mekanizmasinda cagiran fonksiyon soyle dusunulebilir: Ben parametreler ve bu parametreleri kullanacak fonksiyonun alirim ve generic olarak her tur parametre ve onlari kullacak olan fonksiyonun adresini alabilirim, islemi bana verilen fonksiyona yaptiririm ve onun bana verdigi donus degerini dogrudan ya da dolayli olarak cikti ederim.
+- Function pointer array, mantiksal iliskiye sahip olan dizileri gruplandirmak ve onlarin arasinda dolasmak icin kullanilan bir yapidir.
+- Ayni nesne ustunde farkli fonksiyonlar ile operasyon yapmak icin kullanilmaktadir.
+- `int (*a)(int)` turunden elemanlari olan bir fonksiyon arrayi `int (*a[10])(int)` ile tanimlanir.
+- Bunu typedef ile yapmak icin `typedef int(*FPTEST)(int)` tur es ismi ile adlandirilmis fonksiyon pointer'dan `FPTEST[10]` diyerek ayni ture sahip birden fazla fonksiyonun adresini bir dizide tutabiliriz. `FPTEST a[] = {&isupper, &islower,...}` gibi. Bu diziden 5 indisli fonkisyona `a[5]('A')` sekli nde erisilebilir.
+- Kutuphanelerde cok sik kullanilan bir Callback kullanim ornegi: Bir fonksiyon default davranis olarak bir fonksiyonu cagiriyor. Ornegin `terminate` fonksiyonu default olarak abort islevini cagirir. Ancak kutuphane ismi `set_terminate` olan bir islev verir. `set_terminate` islevinin yaptigi fonksiyonu degistirmek icin kullanilabilir, boylece kutuphanedeki default davranisi degistirmek mumkun olur.
+- 1.13'te kaldim
