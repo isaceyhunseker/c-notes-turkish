@@ -2,7 +2,45 @@
 
 BETTER LATE THAN NEVER
 
-## 1 Programlamaya Giris - C Dilinin Diger Diller ile Karsilastirilmasi
+`Completed counter: 16/60`
+
+## 1 C Dilinin Niteleyicilerine Giris
+
+- Tiobe indeksine gore en populer dil 'C' dilidir, onu sirasiyla 'Python', 'Java', 'C++' ve 'C#' takip etmektedir.
+- C dilini niteleyen genel kriterler soyle isimlendirilebilir:
+
+    | Turkce  | Ingilizce  |
+    |---|---|
+    | Buyurgan | Imperative  |
+    | Prosedurel  | Procedural  |
+    | Mulkiyeti Yok | Non-proprietary  |
+    | Orta seviyeli  | Middle-level  |
+    | Statik tur kavramina sahip | Static typing |
+    | Genel amacli | General-purpose|
+    | Verimli | Efficient|
+    | Yapay | Artificial|
+    | Standart | Standart|
+    | Tasinabilir | Portable|
+    | Ifade gucu yuksek | Expressive|
+    |   |   |
+
+- Imperative vs Declarative: Imperatif diller hangi sonucu elde edecegini degil nasil yapildigini anlatmaya yoneliktir. Temel yapi taslari degiskenlerdir. Deklaratif dillerde nasili degil nereye ulascagini soyleyip sonuc aliriz, mesela veri tabanindan ismi Ahmet olan kisilerin sorgulanmasinda, bu sorgunun nasil yapildigi onemli degilken, Imperative dillerde butun bu surecin de anlatilmasi gerekir. C programlama dili imperative'dir.
+- C Programlama dili prosedurel'dir. Buna paradigma denir nesne yonelimli programlama, fonksiyonel programlama gibi.
+- `Python` gibi diller hem nesne yonelimli hem fonksiyonel paradigmayi desteklerken, bu konuda en yetkin dil `C++`'dir. `C++` cogu paradigmayi destekler.
+- Prosedurel programlama ana programi kucuk parcalara ayirma bu parcalari programlama ve bu kucuk parcalarin islenmesi olarak yorumlanabilir: `Functional decomposition`.
+- `cppreference.com` C dilinde calisirken kullanilacak en kiymetli dokuman ve referans kaynagidir.
+- C dili `c89`, `c99` gibi standartlara sahiptir. Dilin kurallarini belgeler. Bu dokuman `ISO` dokumanidir.
+- C dilinin mulkiyet hakki herhangi bir kurum ya da kurulusta degildir.
+- C dili orta seviyeli bir dil oldugu icin hem insan hem makine diline yakindir.
+- C icin `portable assembly` denir, assemly kadar islemciye yakin ancak assembly gibi islemciye bagli da degildir. C makine diline yeterince yakin ve insana da uzak degildir.
+- C dilini assembly koduna ceviren programlara derleyici - `compiler` denir.
+- Derleyiciler oyle gelismislerdir ki kodu assembly'de degil C'de yazip derleyici ile assembly'e cevirmek daha verimlidir: `optimizing compilers`.
+- Bi dilde yazilan dili baska dile cevirmeye `translator` denir. Eger yuksek seviyeli dilden dusuk seviyeli dile donusum yapiliyorsa buna `compile`-`derleme` yapana da `compiler`-`derleyici` denir. C'den assembly'e donusumu yapan programa bu yuzden compiler - derleyici denir.
+- `GCC` GNU C Compiler demektir. Zaman icinde genisleyip bir cok farkli dili desteklemistir, bundan sonra adi GNU Compiler Collection olarak yeniden anlamlandirilmistir.
+- C dili genel amacli bir dildir belirli bir domain'e ozgu tasarlanmamistir. Oyun da yazilabilir, simulasyon da yapilabilir. Cogunlukla verimin kritik oldugu yerlerde ve sistem programlamada kullanilir.
+- Insanin konusmasina yakin programlama dillerine dogal programlama dilleri denir, bu sekilde yazilmamis olanlara ise yapay dil denir. C yapay bir programlama dilidir. Insana anlatilir gibi yazilmaz kendi yapay dilini kullanir. `+`,`-`,`*`, `while` gibi kendine ait ifadelere sahiptir.
+- `C++` ismi `C`dilinin increment `++` operatorunden gelir. C'nin guclu ozelliklerini merkeze alip, nesne yonelimli programlama gibi C'nin desteklemedigi diger bir cok programlama paradigmalarini eklemeler yaparak tasarlanmistir.
+- `Backword compability` eski kodlarin degismis kurallara ragmen guncel derleyicilerde derlenebiliyor olmasidir. C dilinde bu destek cok yuksektir.
 
 ## 2 C Standartlari - Derleme Surecleri - Diagnostic Mesajlari
 
@@ -65,7 +103,7 @@ BETTER LATE THAN NEVER
 - Islem onceligi durumundan kacmak icin fonksiyon makrolarinda degiskeni () icinde yazmaktayiz.
 
     ```c
-    #define ISLEAP(x)  ((y) % 4 == 0 && ((y) % 100 || (y) % 400 == 0)) 
+    #define ISLEAP(y)  ((y) % 4 == 0 && ((y) % 100 || (y) % 400 == 0)) 
     ```
 
 - Kodu kucuk ve sik cagirilan fonksiyonlar cagirildiginda fonksiyon yazmak maliyeti daha fazladir. Bu durumda makrolar daha anlamlidir(fonksiyonel makrolar)
@@ -1071,7 +1109,7 @@ BETTER LATE THAN NEVER
 - Dorduncu parametre olan fonksiyonu biz yaziyoruz, yani `qsort` generic ancak kullandigi compare foksiyonu customdir.
 - Haliyle dizinin turune gore bir compare fonksiyonu yazilir bu fonksiyon `qsort`'a verilmelidir. Fonksiyonun prototipi void * eleman alsa da iceride ilgili typecast islemi yapilmalidir
 
-## 39 Fonksiyon Pointer'lari(Callback) - 2
+## 39 Fonksiyon Pointer'lari(Callback) - 2 & Multidimensional Array
 
 - Fonksiyonu cagiran fonksiyonlara `client` denir.
 - Callback mekanizmasinda cagiran fonksiyon soyle dusunulebilir: Ben parametreler ve bu parametreleri kullanacak fonksiyonun alirim ve generic olarak her tur parametre ve onlari kullacak olan fonksiyonun adresini alabilirim, islemi bana verilen fonksiyona yaptiririm ve onun bana verdigi donus degerini dogrudan ya da dolayli olarak cikti ederim.
@@ -1080,4 +1118,5 @@ BETTER LATE THAN NEVER
 - `int (*a)(int)` turunden elemanlari olan bir fonksiyon arrayi `int (*a[10])(int)` ile tanimlanir.
 - Bunu typedef ile yapmak icin `typedef int(*FPTEST)(int)` tur es ismi ile adlandirilmis fonksiyon pointer'dan `FPTEST[10]` diyerek ayni ture sahip birden fazla fonksiyonun adresini bir dizide tutabiliriz. `FPTEST a[] = {&isupper, &islower,...}` gibi. Bu diziden 5 indisli fonkisyona `a[5]('A')` sekli nde erisilebilir.
 - Kutuphanelerde cok sik kullanilan bir Callback kullanim ornegi: Bir fonksiyon default davranis olarak bir fonksiyonu cagiriyor. Ornegin `terminate` fonksiyonu default olarak abort islevini cagirir. Ancak kutuphane ismi `set_terminate` olan bir islev verir. `set_terminate` islevinin yaptigi fonksiyonu degistirmek icin kullanilabilir, boylece kutuphanedeki default davranisi degistirmek mumkun olur.
-- 1.13'te kaldim
+- Bir diger kullanim ornegi: Cagirildigi zaman baska fonksiyonlari cagiran bir `foo` fonksiyonu olsun.`foo` fonksiyonunun hangi fonksiyonlari cagiracagini ismi `foo_register` olan baska bir fonksiyon belirlemektedir. `foo_register` aldigi fonksiyonlar queue gibi yazar ve onlara erisilecektir. `foo_register` fonksiyonuna kaydelilenler onunla ayni adres bloguna erisen `foo` fonksiyonu tarafindan cagirilir.
+- Multi-dimensional arrays'de kaldim 1.28
