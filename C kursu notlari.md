@@ -2,7 +2,7 @@
 
 BETTER LATE THAN NEVER
 
-`Completed counter: 16/60`
+`Completed counter: 17/60`
 
 ## 1 C Dilinin Niteleyicilerine Giris
 
@@ -22,7 +22,6 @@ BETTER LATE THAN NEVER
     | Standart | Standart|
     | Tasinabilir | Portable|
     | Ifade gucu yuksek | Expressive|
-    |   |   |
 
 - Imperative vs Declarative: Imperatif diller hangi sonucu elde edecegini degil nasil yapildigini anlatmaya yoneliktir. Temel yapi taslari degiskenlerdir. Deklaratif dillerde nasili degil nereye ulascagini soyleyip sonuc aliriz, mesela veri tabanindan ismi Ahmet olan kisilerin sorgulanmasinda, bu sorgunun nasil yapildigi onemli degilken, Imperative dillerde butun bu surecin de anlatilmasi gerekir. C programlama dili imperative'dir.
 - C Programlama dili prosedurel'dir. Buna paradigma denir nesne yonelimli programlama, fonksiyonel programlama gibi.
@@ -785,10 +784,32 @@ BETTER LATE THAN NEVER
 - strcpy fonksiyonunun kesisen bloklar(overlapped) uzerinde calismasi tanismizdir. `strcpy(str+2, str)` ile ali alali yapmaya calismak gibi durumlar burada kast edilmektedir. Bunun icin `memmove` gibi bir fonksiyon kullanilabilir.
 - `strcat` bir yazinin sonunda bir yazi eklemek icin kullanilir.
 
-## 34 Pointer - Standart Kutuphane String Fonksiyonlari 2
+## 34 Standart Kutuphane String Fonksiyonlari 2 - String Literals
 
 - `strcmp` buyuk olan degere sahip olani buyuk doner. `lexicographical` compare denir buna. Burada gelen ilk karsilikli ogenin hangisi buyukse o buyuk olur. Boyuta karsilikli ogelerin hepsinin ayni oldugu durumda bakilir. Sozlukteki gibi karsilastirilir.
-**- 0.30'da kaldim.**
+- `strcmp` esitlik durumunda 0 dondugu icin `return` ve `if` statementlerinde genellikle `!strcmp...` seklinde kullanilir.
+- C'de asla stringler esitligi dogrudan kontrol edilemez. Diger dillerde vardir. `s1 == s2` dedigimizde `s1` ve `s2` dizisinin adresleri karsilastirilir ve dogal olarak her zaman false doner.
+- `stricmp` stringlerin karsilastirmasini `case insensitive` olarak yapar.
+- `strpbrk` yazinin icinde bir karakter grubundan birinin ilk gectigi yeri bulmakta kullanilir. Mesela bir yazida sesli harflerden birini aramak icin kullanilabilir. `strchr`'nin coklusu gibi dusunulebilir. `breitling` stringinde `aeiou` harflerinden birini aramak ornek olabilir.
+
+    ```c
+    char name[9] = {b,r,e,i,t,l,i,n,g};
+    char letters[5] = {a,e,i,o,u};
+
+    char* p = strpbrk(name, letters); //returns adress of letter if found, else returns NULL pointer. 
+    ```
+
+- Literal constant ile ayni anlama gelmektedir, ikisi de sabit demektir. cift tirnak icinde yazilmis yazilari tanimlamakta kullanilmaktadir: `"string literal"`.
+- String literalleri derleyicin bakis acisinda elemanlari char turden olan sonu null karakter olan bir dizidir, derleyici bu ifadeyi gordugunde bir dizi yaratip onu bu string literali ile doldurur "murat" = char arr[5] = {r,a,d,o,\0} demektir. `"rado"` ise bu dizinin adresini tutan bir pointer gibi tanimlanir. Teorik olarak `*"rado"` bu dizinin ilk elemani olan `r` karakterine erismek icin kullanilabilir.
+- String literal'leri statik omurludur, yani string literalini bir kez kullanilsa dahi program boyunca bellekteki yerini koruyor. Bu durum bazen avantaj veya dezavantaj olabilir.
+- String literallerin turu dogal olarak `char`dir. Ancak `const` olmamasina ragmen, bir string literalini degistirme girisimi tanimsiz bir davranistir. Yani string literal'leri read only kullanima aciktir.
+- Bu cokca yapilan hatadan dolayi kacinmak icin bir yol vardir string literal'i `const` olarak tanimlamaktir: `const char* p = "breitling"`. Boylece bu string literal'deki bir degeri degistirme girisiminde bulunulmak mumkun olmaz ve tanimsiz davranistan kacinilir. Zaten Cpp'da bu durum zorunludur.
+- String literalin gecildigi fonksiyonun prototipinin `char *` degil `const char *` olmasi gerekir.
+- Ozdes string literal'ler farkli iki char pointerina atandiginda bu iki literalin ayni adrese sahip olup olmayacagi net degildir, bu ozdes string literal'leri tek bir dizi olarak da farkli iki dizi olarak da tutulabilir. Burada `unspecified behaviour` sozkonusudur. Haliyle bir string literali if statement'ta vs kullanilamaz:`if(chr == "str_literal")`. Bu karsilatirmayi yapmanin gecerli yolu `strcmp`'yi kullanmaktir.
+- String literaller ile `strcmp`, `strcpy` gibi fonksiyonlarin beraber kullanilmasi cok sik karsilasilan bir durumdur.
+`strcpy(name, "movado")` seklinde bir cok kez karsimiza cikar.
+- String literalinde harfleri kullandigimiz gibi onlarin hex karsiligi olan ve daha fazlasini da kullaniliriz: `"\x42"` gibi `"A\x42C"` string literaliu `ABC` yazisina esittir.
+- `"\\"` string literali `\`'yi ifade etmeyi saglarken `\"` string literali `"`'yi ifade eder.
 
 ## 35 Pointer -String Literals - Pointer Dizileri
 
