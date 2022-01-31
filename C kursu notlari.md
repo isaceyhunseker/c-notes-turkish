@@ -6,7 +6,7 @@ BETTER LATE THAN NEVER
 
 ## 1 C Dilinin Niteleyicilerine Giris
 
-- Tiobe indeksine gore en populer dil 'C' dilidir, onu sirasiyla 'Python', 'Java', 'C++' ve 'C#' takip etmektedir.
+- Tiobe indeksine gore en populer dil `C` dilidir, onu sirasiyla `Python`, `Java`, `C++` ve `C#` takip etmektedir.
 - C dilini niteleyen genel kriterler soyle isimlendirilebilir:
 
     | Turkce  | Ingilizce  |
@@ -811,14 +811,33 @@ BETTER LATE THAN NEVER
 - String literalinde harfleri kullandigimiz gibi onlarin hex karsiligi olan ve daha fazlasini da kullaniliriz: `"\x42"` gibi `"A\x42C"` string literaliu `ABC` yazisina esittir.
 - `"\\"` string literali `\`'yi ifade etmeyi saglarken `\"` string literali `"`'yi ifade eder.
 
-## 35 Pointer -String Literals - Pointer Dizileri
+## 35 String Literals 2 - Pointer Dizileri
 
 - C'de string literal const degildir ancak Cpp'da const'tur. Her iki dilde de const gibi ele alinir. Static omurlu degiskenlerdir.
-- **atladim.**
-- **36nin ilk 5 dksini izlemedim. bu konuyla ilgilidir.**
+- `printf` fonksiyonu variyadik bir fonksiyondur: `int printf(const char*,...);` prototipi standart bir eleman sayisini aramaz.
+- `puts` ise sadece aldigi adresteki stringi sonuna kadar yazdirip newline'a gecen bir fonksiyondur, variyadik degildir.
+- `sizeof` bir operator ve keyword'dur ve compile time operatoru'dur. Bir constant expression verir. `strlen` ise bir fonksiyondur ve geri donus degeri programin calisma zamaninda ortaya cikar. Bu iki ifadenin tek benzerligi ikisinin de `size_t` turunden cikti vermesidir.
+- `sizeof` ve `strlen`icin karsilastirma ornegi:
+
+    ```c
+    const char* p = "zenith"
+
+    printf("[1] %zu\n", sizeof p); // prints size of char pointer = 4
+    printf("[2] %zu\n", sizeof *p);// prints size of char pointers point val's size "z" it is char = 1
+    printf("[3] %zu\n", sizeof "zenith"); // prints size of val's size for 7(6+null) time = 7
+    printf("[4] %zu\n", strlen(p)); // lenght of string = 6
+    printf("[5] %zu\n", strlen("zenith")); // lenght of string = 6
+    printf("[6] %zu\n", strlen("")); // lenght of string = 0
+    printf("[7] %zu\n", sizeof("")); // lenght of string plus null string = 1
+    printf("[8] %zu\n", sizeof ++p); // size of char pointer = 4
+    printf("[9] %zu\n", strlen(p));  // lenght of string = 6 there no dif on p pointer pointed adres for[8] because sizeof op has no effect on its parameter.
+    ```
+
+- **31'de kaldim pointer arrays**
 
 ## 36 Pointer to Pointer - Pointer to Pointer & `const` Keyword - `void` Giris
 
+- **36nin ilk 5 dksini izlemedim. pointer arrays.**
 - Pointer to Pointer, gosterici gosteren gostericiler demektir.
 - Pointerin kendi adresinin tutuldugu pointerlardir.
 - Bir ifade bir `T` turunden bir nesnenin adresini gosteriyorsa turu `T*`dir. Bu durumda `T*`'i tutan pointerin turu de `T**` olacaktir.
