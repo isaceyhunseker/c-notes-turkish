@@ -1142,7 +1142,7 @@ BETTER LATE THAN NEVER
     void qsort(void *vpa, // adress of array that will be sorted
             size_t size, // size of array         
             size_t sz, // size of element type of array    
-            int(*fp)(const void *, const void *) //used to compare two of elements of array - has sa me convention with strcmp
+            int(*fp)(const void *, const void *) //used to compare two of elements of array - has same convention with strcmp
                 )
     ```
 
@@ -1160,3 +1160,57 @@ BETTER LATE THAN NEVER
 - Kutuphanelerde cok sik kullanilan bir Callback kullanim ornegi: Bir fonksiyon default davranis olarak bir fonksiyonu cagiriyor. Ornegin `terminate` fonksiyonu default olarak abort islevini cagirir. Ancak kutuphane ismi `set_terminate` olan bir islev verir. `set_terminate` islevinin yaptigi fonksiyonu degistirmek icin kullanilabilir, boylece kutuphanedeki default davranisi degistirmek mumkun olur.
 - Bir diger kullanim ornegi: Cagirildigi zaman baska fonksiyonlari cagiran bir `foo` fonksiyonu olsun.`foo` fonksiyonunun hangi fonksiyonlari cagiracagini ismi `foo_register` olan baska bir fonksiyon belirlemektedir. `foo_register` aldigi fonksiyonlar queue gibi yazar ve onlara erisilecektir. `foo_register` fonksiyonuna kaydelilenler onunla ayni adres bloguna erisen `foo` fonksiyonu tarafindan cagirilir.
 - Multi-dimensional arrays'de kaldim 1.28
+
+## 45 */ilk kisim* & User Defined Types - Structures Giris
+
+- **Ilk 17 dakikayi izlemedim.**
+- User defined types, C'de en sik kullanilan araclardan birisidir.
+- C'nin nesne yonelimli paradigmaya yaklastigi konudur.
+- Kendi turlerimizi kendimizin olusturmasi icin kullanilan yapilardir.
+- Veri alip okudugumuz bilgisayar portunu bir tur olarak tanimlayabiliriz, ya da ogrenci turunden bir nesne tanimlayabiliriz.
+- Bunun icin yapilar `structures`, birlikler `union` ve integer type'i `enumarations` vardir.
+- Structure su sekilde tanimlanir.
+
+    ```c
+    struct Data { // Data is structure tag
+        int mx; //members... 
+        double md; //Structure must have at least one member
+        int a, b, c;
+        int * ptr; //every type possible
+        char str[100];
+    }; // end of definition
+
+    int main() {
+        struct Data mydata;//Legal
+        Data mydata;// Data could not used without struct - it is wrong
+        
+    }
+    ```
+
+- `sizeof` operatoru struct'in icindeki elemanlarin boyutlarinin toplamini yani struct'in boyutunu verir. `sizeof(struct Data)` seklinde yazilir.
+- Bu yapi bildirimleri - structures, cogunlukla header dosyalarinin icinde tutulur.
+- Bildirimler yer tutmaz ancak onlardan instance yaratildiginda elemanlarin boyutu kadar yer tutar.
+- Static omurlu degiskenleri ilk deger vermeden yaratirsak 0 ile dolu olacak sekilde ilk deger alir. Pointer'lar ile null pointer olarak otomatik olarak tamamlanir.
+- Fonskiyonlara da arguman olarak struct'lar verilebilir. Fonksiyonun donus degeri struct olabilir: `struct Data func(struct Data x)`
+- Bu turden bir nesneyi gosterecek bir pointer degisken de yine tanimlanabilir: `struct Data *ptr = &mydata;`
+- C'de struct bildirimlerinde ilk deger vermek mumkun degildir. Ancak struct'in instance'inin bildiriminde degerler verilebilir.
+- Yapilarin elemanlarina erismek icin iki tane operator vardir, bunlarin ismi member selection operation: `.` dot ve `->` arrow operatorudur.
+- Bu iki operator de operator oncelik seviyesinde birinci siradadir. `.` operatoru `->` operatorunden daha onceliklidir.
+- **Iki operator de yapinin elemanina erismek icin kullanilir, `.` operatoru yapinin kendisini ister `->` operatoru ise adresini ister.**
+- `.` operatorunun sol operandi bir yapi turunden nesne olmak zorundadir. Saginda ise bu yapinin elemanini yazmak gerekir.: yukarida tanimlanan mydata structure'i icin `mydata.mx` gibi kullanilabilir. `mydata.mx` artik herhangi bir integer degiskenle aynidir. Adresi ise `mydata` struct'inin icindedir.
+- Bir yapinin icinde baska bir yapi tanimlanir.
+    ```c
+    struct Date {
+        int x,y,z;
+    };
+
+    struct Student {
+        int no;
+        char name[40];
+        struct Date bdate; // bdate is another struct hold birtday of students
+    }
+    ```
+- Bir yapi nesnesi sadece 4 operatorun operandi olabilir: `.`, `->` ,`sizeof`,`&`.
+- `sizeof` icin `sizeof(struct Data)` ile `sizeof(mydata)` ayni ciktiyi verir.
+
+**1.31te kaldim**
