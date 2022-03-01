@@ -2,7 +2,7 @@
 
 BETTER LATE THAN NEVER
 
-`Completed counter: 17/60`
+`Completed counter: 18/61`
 
 ## 1 C Dilinin Niteleyicilerine Giris
 
@@ -1197,8 +1197,9 @@ BETTER LATE THAN NEVER
 - Yapilarin elemanlarina erismek icin iki tane operator vardir, bunlarin ismi member selection operation: `.` dot ve `->` arrow operatorudur.
 - Bu iki operator de operator oncelik seviyesinde birinci siradadir. `.` operatoru `->` operatorunden daha onceliklidir.
 - **Iki operator de yapinin elemanina erismek icin kullanilir, `.` operatoru yapinin kendisini ister `->` operatoru ise adresini ister.**
-- `.` operatorunun sol operandi bir yapi turunden nesne olmak zorundadir. Saginda ise bu yapinin elemanini yazmak gerekir.: yukarida tanimlanan mydata structure'i icin `mydata.mx` gibi kullanilabilir. `mydata.mx` artik herhangi bir integer degiskenle aynidir. Adresi ise `mydata` struct'inin icindedir.
+- `.` operatorunun sol operandi bir yapi turunden nesne olmak zorundadir. Saginda ise bu yapinin elemanini yazmak gerekir. Yukarida tanimlanan mydata structure'i icin `mydata.mx` gibi kullanilabilir. `mydata.mx` artik herhangi bir integer degiskenle aynidir. Adresi ise `mydata` struct'inin icindedir.
 - Bir yapinin icinde baska bir yapi tanimlanir.
+
     ```c
     struct Date {
         int x,y,z;
@@ -1210,7 +1211,109 @@ BETTER LATE THAN NEVER
         struct Date bdate; // bdate is another struct hold birtday of students
     }
     ```
+
 - Bir yapi nesnesi sadece 4 operatorun operandi olabilir: `.`, `->` ,`sizeof`,`&`.
 - `sizeof` icin `sizeof(struct Data)` ile `sizeof(mydata)` ayni ciktiyi verir.
+- `struct Student` icin soyle bir nesne yaratilip atama yapilabilir: `struct Student Cey = {122, "cey", {1,1,1999}}`
+- Struct turunden baska bir ture donusum mumkun degildir. Yapi turleriyle calisirken otomatik tur donusumu mumkun degildir. Atama operatorunun sagi ve solu ayni turde olmalidir. Farkli iki struct birbirine atanamaz ve toplanamaz. Tur degistirme operatoru vs kullanmak da mumkun degildir.
 
-**1.31te kaldim**
+    ```c
+    struct A {
+        int x;
+    };
+    
+    struct B {
+        int y;
+    };
+
+    int main()
+    {
+        struct A a1;
+        struct B b1;
+        int ival = 10;
+
+        a1 = 10; //syntax error
+        a1 = b1; //syntax error
+        b1 = (struct B)10; // syntax error
+    }
+    ```
+
+- Ayni turden iki struct birbirine atanabilir, bu durumda atanan structin icindeki butun degerler tek tek atandigi structin elemanlarina kopyalanir. Ancak buyuk structurlarda cok maliyetli bir istir. Sonuc olarak bu kullanmasi mumkun bir operasyondur ancak buyuk structurlarda kullanilmaz.
+- Bunun yerine struct'in elemanlarini secip karsi tarafta da ayni elemanlara atamasi yapilir.
+
+    ```c
+    struct Data {
+        int x, y, z;
+        double dval;
+    };
+
+    int main()
+    {
+        struct Data a = {10, 20, 30, 4.5};
+        struct Data b;
+
+        b = a; //legal but not used generally for big structures.
+        b.x = a.x;
+        b.y = a.y;
+        b.dval = a.dval; 
+
+        memcpy(&b, &a, sizeof(struct Data)); //equals to b = a;
+    }
+    ```
+
+- `const struct`larin elemanlarina atama yapmaya calismak yine syntax hatasidir.
+- Bildigimiz gibi dizileri dogrudan birbirine atayamayiz ancak struct'in elemani olan diziler birbirine atanabilir, bu sekilde dolayli yoldan bu islemi gerceklestirmek mumkun olur.
+- C'de butun yapilar public'tir C++'daki gibi private elemanlar yaratilmasi soz konusu degildir.
+- Struct'in icinde dizi varsa ilk deger atanirken yukardaki student structure'indaki date arrayi gibi kume parantezi kullanilir ancak kullanilmasa dahi hata vermez sirayla o elemanlara atama yapilir: `struct Student Cey = {122, "cey", {1,1,1999}}` ile `struct Student Cey = {122, "cey", 1,1,1999}` ayni anlama gelir. 
+- Ancak kume parantezlerini kullanmak ozellikle cok boyutlu diziler iceren struct'lara ilk deger verirken fazlasiyla onemlidir, kullanilmalidir.
+- Asagida ilk deger tanimlanmasi yapilan bir struct verilmistir.
+
+    ```c
+    struct Data {
+        int x, y;
+        int a[20];
+        const char* p;
+        char str[40];
+    };
+
+    int main()
+    {
+        struct Data mydata = {
+            .x = 10,
+            .y = 40,
+            .a = { [10] = 5, [13] = 9}, //designated initializer syntax
+            .p = "movado",
+            .str = "zenith" //static storage
+    }
+    ```
+
+- Ismi olmayan turden degiskenlerin tanimlanmasi da yine mumkundur. Ancak orada elemanlarin direk struct'in sonunda belirtilmesi gerekir.
+
+    ```c
+    struct {
+        int a, b, c;
+    }x1, x2 = {1,2,4};// x2 has initial value but x1 has not.
+    ```
+
+- Pointer to Structure Objects, Struct adresini tutan pointer turu demektir:
+
+    ```c
+    struct Data {
+        int a, b, c;
+    };
+
+    int main()
+    {
+        struct Data* p; // pointer to structure
+
+        struct Data mydata;
+        struct Data a[10];
+
+        struct Data *p = &mydata; // same usage
+
+        p = a; // same usage
+    }
+    ```
+
+- Yapi ne kadar buyuk olursa olsun pointer'in boyutu integer pointer boyutu kadardir.
+
