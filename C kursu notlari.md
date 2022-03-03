@@ -1264,7 +1264,7 @@ BETTER LATE THAN NEVER
 - `const struct`larin elemanlarina atama yapmaya calismak yine syntax hatasidir.
 - Bildigimiz gibi dizileri dogrudan birbirine atayamayiz ancak struct'in elemani olan diziler birbirine atanabilir, bu sekilde dolayli yoldan bu islemi gerceklestirmek mumkun olur.
 - C'de butun yapilar public'tir C++'daki gibi private elemanlar yaratilmasi soz konusu degildir.
-- Struct'in icinde dizi varsa ilk deger atanirken yukardaki student structure'indaki date arrayi gibi kume parantezi kullanilir ancak kullanilmasa dahi hata vermez sirayla o elemanlara atama yapilir: `struct Student Cey = {122, "cey", {1,1,1999}}` ile `struct Student Cey = {122, "cey", 1,1,1999}` ayni anlama gelir. 
+- Struct'in icinde dizi varsa ilk deger atanirken yukardaki student structure'indaki date arrayi gibi kume parantezi kullanilir ancak kullanilmasa dahi hata vermez sirayla o elemanlara atama yapilir: `struct Student Cey = {122, "cey", {1,1,1999}}` ile `struct Student Cey = {122, "cey", 1,1,1999}` ayni anlama gelir.
 - Ancak kume parantezlerini kullanmak ozellikle cok boyutlu diziler iceren struct'lara ilk deger verirken fazlasiyla onemlidir, kullanilmalidir.
 - Asagida ilk deger tanimlanmasi yapilan bir struct verilmistir.
 
@@ -1317,3 +1317,35 @@ BETTER LATE THAN NEVER
 
 - Yapi ne kadar buyuk olursa olsun pointer'in boyutu integer pointer boyutu kadardir.
 
+## 46 Pointer to Struct & Yapi Turleri ve Typedef Bildirimleri &
+
+- Struct'in `a` isimli `int` elemani olsun ve buna pointeri olan `ptr` uzerinden erismeye calisalim. Bu durumda yazmamiz gereken ifade `(*ptr).a`'dir.
+- Ancak Struct pointer'larina erisirken yukardaki yapidan ziyade `->` ok operatoru kullanilir.
+- Ok operatorunun sol operandi bir yapi nesnesi adresi olmali.
+- Ok operatorunun sag operandi sol operandi olan yapi nesnesinin elemanlarindan biri olmali.
+- Gunun sonunda `ptr->b` ile `(*ptr).b` ayni anlama gelir.
+- Bir structure adresiyle bir fonksiyona arguman olarak gecilebilir.
+
+    ```c
+    struct Data { //Data name is called as structure tag.
+        int x, y;
+        double dval;
+        char buffer[16];
+    };
+
+    void func(struct Data* ptr)
+    {
+        ...
+    }
+
+    int main()
+    {
+        struct Data mydata = {1, 3, 4.5 , "alican" };
+
+        func(&mydata);
+    }
+    ```
+
+- C'de struct tag'leri yeni instance yaratilirken tek basina kullanilamaz: `Data mydata;` hata verirken `struct Data mydata` olmasi gerekendir. 
+- Bu sekilde her zaman `struct` anahtar sozcugunden kurtularak kullanmak icin `typedef` bildirimleri kullanilmaktadir.
+- 0.30'da kaldim
