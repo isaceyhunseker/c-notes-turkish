@@ -1,4 +1,4 @@
-# c-notes-turkish
+# C Notlari
 
 BETTER LATE THAN NEVER
 
@@ -1317,7 +1317,7 @@ BETTER LATE THAN NEVER
 
 - Yapi ne kadar buyuk olursa olsun pointer'in boyutu integer pointer boyutu kadardir.
 
-## 46 Pointer to Struct & Yapi Turleri ve Typedef Bildirimleri &
+## 46 Pointer to Struct & Yapi Turleri ve Typedef Bildirimleri & Yapi Nesneleri Uzerinde Islem Yapan Fonksiyonlar
 
 - Struct'in `a` isimli `int` elemani olsun ve buna pointeri olan `ptr` uzerinden erismeye calisalim. Bu durumda yazmamiz gereken ifade `(*ptr).a`'dir.
 - Ancak Struct pointer'larina erisirken yukardaki yapidan ziyade `->` ok operatoru kullanilir.
@@ -1340,12 +1340,61 @@ BETTER LATE THAN NEVER
 
     int main()
     {
-        struct Data mydata = {1, 3, 4.5 , "alican" };
+        struct Data mydata = {1, 3, 4.5 , "breitling" };
 
         func(&mydata);
     }
     ```
 
-- C'de struct tag'leri yeni instance yaratilirken tek basina kullanilamaz: `Data mydata;` hata verirken `struct Data mydata` olmasi gerekendir. 
+- C'de struct tag'leri yeni instance yaratilirken tek basina kullanilamaz: `Data mydata;` hata verirken `struct Data mydata` olmasi gerekendir.
 - Bu sekilde her zaman `struct` anahtar sozcugunden kurtularak kullanmak icin `typedef` bildirimleri kullanilmaktadir.
-- 0.30'da kaldim
+- `typedef` bir turun yerine es isim kullanilmasi idi, bu bildirimle `type alias` yaratmak.
+- Structlarda typedef kullanmanin avantaji Struct on ekinden kurtularak yazimi kolaylastirmak.
+- Structlara es isim verildigi gibi struct pointerlarina da verilebilir: `typedef struct Data* DataPtr`.
+- Typedef bildirimi su sekilde yapilabilir:
+
+    ```c
+    typedef struct Data { 
+        int x, y;
+        double dval;
+        char buffer[16];
+    } Data;
+
+    int main()
+    {
+        //Both equation has same meaning.
+        Data mydata = {3, 7, 6.7};
+        struct Data mydata = {3, 7, 6.7}; 
+    }
+    ```
+
+- Struct'lar genel olarak kutuphaneler yazilirken kullanilir. Kutuphane fonksiyonlari bu struct'larin turunden parametreler alan ve geri donduren fonksiyonlar olmaktadir.
+- Bir fonksiyonun parametresi struct turunden olabilir, bu durumda bu fonksiyonu cagirirken yapi turunden bir nesne verilmelidir. Bu cagri bir cesit `call by value` cagrisidir. Dogrudan structure verilir. `Call by value` bir kopyalamaya neden oldugu icin maliyet fazladir.
+- Haliyle bu tarz bir kullanim sadece kucuk struct'larda kullanilabilir.
+- Struct'in boyutu buyukse fonksiyona nesneyi degil nesnenin adresini veririz, fonksiyon ciktilarini adresini aldigi nesneye yazarak doner.
+- Bu tarz fonksiyonlara `accessor`/`getter`/`get function` isimleri verilir.
+- Bu fonksiyona cagri nesnenin kendisiyle degil adresiyle olacaktir. Bu cagri bildigimiz uzere `call by reference` olarak adlandirilir.
+- Fonksiyonlar adresini aldiklari structure'lari iki sekilde kullanabilir, bunlardan birincisi sadece islem yapip o struct'i doldurmak icin olan yontem `out`, digeri ise hem once doldurulmus bu struct'i okumak ve/veya degistirmek icin kullanilan yontem `in-out`
+- Bununla beraber fonksiyon icinde bir struct yaratilip o geri donus parametresi olarak da girilebilir.`struct Watch create_random_watch(void)` fonksiyonu gibi.
+- Bu tarz fonksiyonlar da ancak kucuk yapilarla calisirken kullanilabilir.
+- Fonksiyonun geri donus degeri struct pointer turunden bir degisken olabilir. `struct Watch* foo(void)` seklinde fonksiyon tanimlanir.
+- Adres donduren bir fonksiyon otomatik omurlu bir nesnenin adresini donderemez, haliyle struct'lar icin de bu durum gecerlidir.
+- Boyle durumlarda fonksiyon icinde memory allocation ile bir bellek alani yaratilir, bu bellek alanini gosteren pointer donderilir.
+
+    ```c
+    struct Watch* create_watch(void)
+    {
+        struct Watch* pd = (struct Watch *) malloc(sizeof(Employee));
+        pd->id = 122233;
+        pd->dimension = 41;
+
+        return pd;
+    }
+    ```
+
+- Fonksiyonlar cagirilirken aldigi parametre degiskeni ve geri donus degeri struct turunden bir adres olabilir bu durumda ayni struct'in adresini geri dondurur. 
+- Klasik struct yapisindaki durumda yazilimci calistigi struct'in butun elemanlarini ve alabilcegi degerleri bilmeli, burada her struct icin ogrenme yuku vardir. Gomulu sistemlerde genelde bu yapilar kullanilir.
+- C'de Nesne yonelimli programlamaya en yakin yapilar struct'lardir. Bazi C kutuphane ve modulleri oop yaklasimiyla olusturulmustur.
+- Struct'taki elemanlara dogrudan erismek ve degistirmek yerine o struct'a fonksiyonlar araciligiyla erismek kullanilan bir baska yontemdir, yazilimci asla dogrudan struct uzerinde calismaz.
+- Client kodun butun elemanlara erisip yanlis degerler girmesini vs engeller. Hizmet veren kodlar disinda hicbir kod blogu bu struct'lara dogrudan erisemez. Bu degerlere dogrudan erisen fonksiyonlar haliyle az oldugu icin burada yapilar degistiginde az bir kod degistirme eforu olur. 
+- Bu sistem OOP'deki public private yapilara benzetilmistir.
