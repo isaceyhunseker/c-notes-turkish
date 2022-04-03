@@ -1399,7 +1399,7 @@ BETTER LATE THAN NEVER
 - Client kodun butun elemanlara erisip yanlis degerler girmesini vs engeller. Hizmet veren kodlar disinda hicbir kod blogu bu struct'lara dogrudan erisemez. Bu degerlere dogrudan erisen fonksiyonlar haliyle az oldugu icin burada yapilar degistiginde az bir kod degistirme eforu olur.
 - Bu sistem OOP'deki public private yapilara benzetilmistir.
 
-## 47 Struct Kutuphaneleri
+## 47 Struct Kutuphaneleri & OOP Tarzi Kutuphaneler & Complete / Incomplete Types
 
 - C'de iki tarz kutuphane vardir, bunlar C tarzi kutuphane ve OOP tarzi kutuphane olarak adlandirilabilir.
 - C tarzi kutuphaneler yapilarin butun elemanlari hakkinda bilgi sahibi olmayi gerektiren ve dogrudan erisip uzerinde islemler yapildigi kutuphanelerdir.
@@ -1409,4 +1409,42 @@ BETTER LATE THAN NEVER
 - `locale` belirli kutuphanelerde belirli kurallar setine denir. Para birimi euro olsun saat zamani gmt +2 olsun gibi. Buna uygun fonksiyonlara `locale-dependent`, uygun olmayanlara ise `locale-independent` denir.
 - `locale.h` fonksiyonundaki `setlocale` bu localizasyon degisikliklerinin yapilmasi gerekmektedir.
 - local bu sekilde degistirdikten sonra local-dependent fonksiyonlar o lokaldeki konfigurasyona gore calismaya baslayacaktir.
-- 1.10'da kaldim.
+- `strftime` fonksiyonu zaman bildirimini secilmis olan locale gore formatlar.
+- `clock_t` bir sureyi takip ediyor, n tane clock_t bir saniyeye bedel,sistemden sisteme degisen bir degerdir. 1/n = CLOCK_PER_SEC denklemine gore ilerlenir.
+- `clock()` fonksiyonu parametre almaz. Cagirildigi ana kadar main'in baslangicindan ne kadar zaman gecmis bunu `clock_t` tipinde olcak sekilde doner.
+- Yapilan islemlerin ne kadar suruldugunu(saniye cinsinden) hesaplamak icin start ve end degerleri yaratilip fark alinir.
+
+    ```c
+    int main()
+
+    int a[SIZE];
+    
+    clock_t start = clock();
+    sort_array(a,SIZE);
+    clock_t end = clock();
+
+    printf("%ld clock tick\n", end - start);
+    printf("%f clock tick\n", (double)(end - start) / CLOCKS_PER_SEC);
+    ```
+
+- `CLOCK_PER_SEC` yerine standart olmayan ama yaygin bir diger deger `CLK_TCK` olarak tutulur.
+- `sleep` standart bir C fonksiyonudur, icinde ms cinsinden parametre alir.
+- `mktime` bulunan zamandan belirli bir sure onceki timepoint'i return eden bir fonksiyondur, girdi olarak girilen zaman time_t turunden olmalidir. Cikti da boyledir.
+- OOP tarzi kutuphanelerde yapinin elemanlari client kodun erisemeyecegi veya degistiremeyecegi tasarimdadir.
+- Bunu yapmanin birinci yolu degistirlmesi istenmeyen elemani void pointer ile gostermektir. Bu durumda client kod bu yapinin elemanlari hakkinda bilgi sahibi olamaz erisemez.
+
+    ```c
+    struct Data {
+        void* vp;
+    };
+
+    int main()
+    {
+        struct Data mydata;
+        //mydata.vp // even reach it could not be changed.
+    }
+    ```
+
+- Ikinci yol, struct'in elemanlarinin gosterildigi ancak public private olanlarin `_` notasyonu ile ayrildigi senaryodur: `x` public iken `x_` private demektir. Client kodu yazan bunu bilerek hareket eder.
+- Elemanlara erismek icin elemanlari cagiran fonksiyonlar kullanilir, bu en yaygin yoldur. Nesnenin adresi cagirma fonksiyonuna gonderilir, temel ilke budur.
+- 1.48de kaldim.
